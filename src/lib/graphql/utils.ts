@@ -1,4 +1,4 @@
-import { Paginated, PageInfo } from '../types';
+import { PageInfo, Paginated } from '../types';
 
 type UnwoundEdges<EdgeType> = [EdgeType[], PageInfo];
 

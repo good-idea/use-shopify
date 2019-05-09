@@ -10,5 +10,5 @@ export interface PageInfo {
 
 export interface Paginated<T> {
   pageInfo: PageInfo;
-  edges: Edge<T>[];
+  edges: Array<Edge<T>>;
 }

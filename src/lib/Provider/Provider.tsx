@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Provider as UrqlProvider, createClient, Client } from 'urql';
+import { Client, createClient, Provider as UrqlProvider } from 'urql';
 
 interface ShopifyContextValue {
   client: Client;

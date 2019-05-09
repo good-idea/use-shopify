@@ -1,5 +1,5 @@
-import { Paginated } from './graphql';
 import { Collection } from './collection';
+import { Paginated } from './graphql';
 import { ShopifyImage } from './media';
 
 export type Money = string;

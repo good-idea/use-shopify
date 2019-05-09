@@ -1,5 +1,5 @@
-import { Money, Variant } from './product';
 import { MailingAddress } from './customer';
+import { Money, Variant } from './product';
 
 interface AppliedGiftCard {
   amountUsed: Money;

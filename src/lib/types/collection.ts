@@ -1,6 +1,6 @@
+import { Paginated } from './graphql';
 import { ShopifyImage } from './media';
 import { Product } from './product';
-import { Paginated } from './graphql';
 
 export interface Collection {
   id: string;

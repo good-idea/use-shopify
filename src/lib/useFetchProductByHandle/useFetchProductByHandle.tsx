@@ -1,4 +1,4 @@
-import { useQuery, CombinedError, OperationContext, RequestPolicy } from 'urql';
+import { CombinedError, OperationContext, RequestPolicy, useQuery } from 'urql';
 import { defaultQuery, QueryResult } from './defaultQuery';
 
 interface FetchConfig {
