@@ -4,6 +4,7 @@ module.exports = {
   testMatch: ['**/**/*.test.ts', '**/**/*.test.tsx'],
   coveragePathIgnorePatterns: ['node_modules', 'coverage', 'jest.config.js'],
   testEnvironment: 'jsdom',
+  collectCoverage: true,
   collectCoverageFrom: ['./src/lib/**/*.{ts,tsx}'],
   transform: {
     '^.+\\.tsx?$': 'ts-jest'
