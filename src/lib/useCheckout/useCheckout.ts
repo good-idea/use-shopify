@@ -1,12 +1,13 @@
 import * as React from 'react';
-import { Checkout, CheckoutLineItem } from '../types';
 import { useMutation } from 'urql';
+import { Checkout, CheckoutLineItem } from '../types';
+
 import {
   ADD_MUTATION,
-  CREATE_MUTATION,
-  UPDATE_LINE_ITEM_MUTATION,
   APPLY_DISCOUNT_MUTATION,
-  REMOVE_DISCOUNT_MUTATION
+  CREATE_MUTATION,
+  REMOVE_DISCOUNT_MUTATION,
+  UPDATE_LINE_ITEM_MUTATION
 } from './mutations';
 
 interface UserError {
@@ -56,12 +57,12 @@ const initialState = {
 
 export const defaultCheckoutProps = {
   ...initialState,
-  openCheckout: () => {},
-  closeCheckout: () => {},
-  addToCheckout: async () => {},
-  updateQuantity: () => async () => {},
-  applyDiscount: async () => {},
-  removeDiscount: async () => {}
+  addToCheckout: async () => undefined,
+  applyDiscount: async () => undefined,
+  closeCheckout: () => undefined,
+  openCheckout: () => undefined,
+  removeDiscount: async () => undefined,
+  updateQuantity: () => async () => undefined
 };
 
 /**
@@ -100,17 +101,11 @@ export const useCheckout = (): UseCheckoutProps => {
    * Hooks setup
    */
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [addMutationState, addMutation] = useMutation(ADD_MUTATION);
-  const [createMutationState, createMutation] = useMutation(CREATE_MUTATION);
-  const [updateLineItemMutationState, updateLineItemMutation] = useMutation(
-    UPDATE_LINE_ITEM_MUTATION
-  );
-  const [applyDiscountMutationState, applyDiscountMutation] = useMutation(
-    APPLY_DISCOUNT_MUTATION
-  );
-  const [removeDiscountMutationState, removeDiscountMutation] = useMutation(
-    REMOVE_DISCOUNT_MUTATION
-  );
+  const [, addMutation] = useMutation(ADD_MUTATION);
+  const [, createMutation] = useMutation(CREATE_MUTATION);
+  const [, updateLineItemMutation] = useMutation(UPDATE_LINE_ITEM_MUTATION);
+  const [, applyDiscountMutation] = useMutation(APPLY_DISCOUNT_MUTATION);
+  const [, removeDiscountMutation] = useMutation(REMOVE_DISCOUNT_MUTATION);
 
   const { currentCheckout } = state;
   const checkoutId = currentCheckout ? currentCheckout.id : undefined;
