@@ -28,7 +28,7 @@
     "doc:html": "typedoc src/ --exclude **/*.spec.ts --target ES6 --mode file --out build/docs",
     "doc:json": "typedoc src/ --exclude **/*.spec.ts --target ES6 --mode file --json build/docs/typedoc.json",
     "doc:publish": "gh-pages -m \"[ci skip] Updates\" -d build/docs",
-    "version": "np",
+    "release": "np",
     "reset": "git clean -dfx && git reset --hard && npm i",
     "clean": "trash build test",
     "prepare-release": "run-s all version doc:publish",
@@ -88,7 +88,9 @@
     "react": "^16.8.0",
     "react-dom": "^16.8.0"
   },
-  "files": ["./build"],
+  "files": [
+    "./build"
+  ],
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
