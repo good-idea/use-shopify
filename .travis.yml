@@ -12,11 +12,28 @@ jobs:
     #   script: yarn test
     - stage: release
       if: branch = master
-      # script: skip
+      node_js: lts/*
+      before_install: skip
+      script:
+        # Update `AUTHORS.md`
+        - export MAINTAINER_TOKEN=${GH_TOKEN}
+        - go get github.com/myii/maintainer
+        - maintainer contributor
+
+        # Update Tables of Content in the relevant `.md` files
+        - npm install markdown-toc -D
+        - markdown-toc -i CONTRIBUTING.md
+        # - markdown-toc -i README.md
+        - markdown-toc -i TOFS_pattern.md
+
+        # Install all dependencies required for `semantic-release`
+        - npm install @semantic-release/changelog@3 -D
+        - npm install @semantic-release/exec@3 -D
+        - npm install @semantic-release/git@7 -D
       deploy:
         provider: script
         skip_cleanup: true
         script:
           - yarn build
           - yarn semantic-release
-          # - yarn test:coverage:send
+          - yarn test:coverage:send
