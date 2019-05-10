@@ -23,8 +23,7 @@ jobs:
         # Update Tables of Content in the relevant `.md` files
         - npm install markdown-toc -D
         - markdown-toc -i CONTRIBUTING.md
-        # - markdown-toc -i README.md
-        - markdown-toc -i TOFS_pattern.md
+        - markdown-toc -i README.md
 
         # Install all dependencies required for `semantic-release`
         - npm install @semantic-release/changelog@3 -D
