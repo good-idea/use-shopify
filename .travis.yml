@@ -2,10 +2,25 @@ sudo: false
 language: node_js
 node_js:
   - '10'
-  - '11'
-# keep the npm cache to speed up installs
 cache:
   directories:
     - '$HOME/.npm'
-after_success:
-  - yarn test:coverage:send
+jobs:
+  include:
+    - stage: install
+      script: yarn install
+      skip_cleanup: true
+    - stage: test
+      script:
+        - yarn test
+      skip_cleanup: true
+    - stage: release
+      node_js: lts/*
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script:
+          - npx semantic-release
+      if: branch = master
+      after_success:
+        - yarn test:coverage:send
