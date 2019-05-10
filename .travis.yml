@@ -12,11 +12,13 @@ jobs:
       script: yarn test
     - stage: release
       if: branch = master
-      # script: skip
+      node_js: lts/*
+      before_install: skip
+      script:
+        # Update Tables of Content in the relevant `.md` files
+        - markdown-toc -i CONTRIBUTING.md
+        - markdown-toc -i README.md
       deploy:
         provider: script
         skip_cleanup: true
-        script:
-          - yarn build
-          - yarn semantic-release
-          - yarn test:coverage:send
+        script: yarn build && yarn semantic-release && yarn test:coverage:send
