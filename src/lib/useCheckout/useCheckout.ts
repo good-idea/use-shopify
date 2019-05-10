@@ -37,6 +37,7 @@ export interface UseCheckoutProps extends CheckoutState {
   openCheckout: () => void;
   closeCheckout: () => void;
   addToCheckout: (args: AddToCheckoutArgs) => Promise<void>;
+  addItemToCheckout: (args: AddLineItem) => Promise<void>;
   updateQuantity: (item: CheckoutLineItem) => (qty: number) => Promise<void>;
   applyDiscount: (code: string) => Promise<void>;
   removeDiscount: () => Promise<void>;
@@ -55,15 +56,15 @@ const initialState = {
   currentCheckout: undefined
 };
 
-export const defaultCheckoutProps = {
-  ...initialState,
-  addToCheckout: async () => undefined,
-  applyDiscount: async () => undefined,
-  closeCheckout: () => undefined,
-  openCheckout: () => undefined,
-  removeDiscount: async () => undefined,
-  updateQuantity: () => async () => undefined
-};
+// export const defaultCheckoutProps = {
+//   ...initialState,
+//   addToCheckout: async () => undefined,
+//   applyDiscount: async () => undefined,
+//   closeCheckout: () => undefined,
+//   openCheckout: () => undefined,
+//   removeDiscount: async () => undefined,
+//   updateQuantity: () => async () => undefined
+// };
 
 /**
  * State
@@ -133,6 +134,9 @@ export const useCheckout = (): UseCheckoutProps => {
     dispatch({ type: FINISHED_REQUEST, ...result.data[resultKey] });
   };
 
+  const addItemToCheckout = async (lineItem: AddLineItem) =>
+    addToCheckout({ lineItems: [lineItem] });
+
   const updateQuantity = (item: CheckoutLineItem) => async (
     quantity: number
   ) => {
@@ -182,6 +186,7 @@ export const useCheckout = (): UseCheckoutProps => {
     openCheckout,
     closeCheckout,
     addToCheckout,
+    addItemToCheckout,
     updateQuantity,
     applyDiscount,
     removeDiscount
