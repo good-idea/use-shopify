@@ -12,12 +12,11 @@ jobs:
       script: yarn test
     - stage: release
       if: branch = master
-      script: skip
+      # script: skip
       deploy:
         provider: script
         skip_cleanup: true
         script:
           - yarn build
           - yarn semantic-release
-      after_success:
-        - yarn test:coverage:send
+          - yarn test:coverage:send
