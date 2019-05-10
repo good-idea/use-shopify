@@ -18,5 +18,5 @@ jobs:
         skip_cleanup: true
         script:
           - yarn build
-          # - npx semantic-release
+          - yarn semantic-release
           # - yarn test:coverage:send
