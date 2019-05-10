@@ -6,15 +6,18 @@ cache:
   directories:
     - '$HOME/.npm'
     - node_modules
-script:
-  - yarn test
-deploy:
-  on:
-    branch: master
-  provider: script
-  skip_cleanup: true
-  script:
-    - yarn build
-    - yarn semantic-release
-  after_success:
-    - yarn test:coverage:send
+jobs:
+  include:
+    - stage: test
+      script: yarn test
+    - stage: release
+      if: branch = master
+      script: skip
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script:
+          - yarn build
+          - yarn semantic-release
+      after_success:
+        - yarn test:coverage:send
