@@ -33,7 +33,7 @@ export interface Product {
   productType?: string;
   priceRange?: ProductPriceRange;
   availableForSale?: boolean;
-  collections?: Collection[];
+  collections?: Paginated<Collection>;
   images: Paginated<ShopifyImage>;
   variants: Paginated<Variant>;
   __typename: 'Product';

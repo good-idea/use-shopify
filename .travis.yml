@@ -5,22 +5,18 @@ node_js:
 cache:
   directories:
     - '$HOME/.npm'
+    - node_modules
 jobs:
   include:
-    - stage: install
-      script: yarn install
-      skip_cleanup: true
     - stage: test
-      script:
-        - yarn test
-      skip_cleanup: true
+      script: yarn test
     - stage: release
-      node_js: lts/*
+      if: branch = master
+      # script: skip
       deploy:
         provider: script
         skip_cleanup: true
         script:
-          - npx semantic-release
-        after_success:
+          - yarn build
+          - yarn semantic-release
           - yarn test:coverage:send
-      if: branch = master
