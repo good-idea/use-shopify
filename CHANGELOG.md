@@ -1,3 +1,11 @@
+# [0.2.0](https://github.com/good-idea/use-shopify/compare/v0.1.7...v0.2.0) (2019-05-10)
+
+
+### Features
+
+* **use-shopify:** add simpler addItemToCheckout function ([9e71cef](https://github.com/good-idea/use-shopify/commit/9e71cef))
+* **use-shopify:** add simpler addItemToCheckout function ([#9](https://github.com/good-idea/use-shopify/issues/9)) ([f1db896](https://github.com/good-idea/use-shopify/commit/f1db896))
+
 ## [0.1.7](https://github.com/good-idea/use-shopify/compare/v0.1.6...v0.1.7) (2019-05-10)
 
 
