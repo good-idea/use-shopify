@@ -8,8 +8,8 @@ cache:
     - node_modules
 jobs:
   include:
-    - stage: test
-      script: yarn test
+    # - stage: test
+    #   script: yarn test
     - stage: release
       if: branch = master
       # script: skip
@@ -18,6 +18,6 @@ jobs:
         skip_cleanup: true
         script:
           - yarn install
-          - yarn build
-          - npx semantic-release
-          - yarn test:coverage:send
+          # - yarn build
+          # - npx semantic-release
+          # - yarn test:coverage:send
