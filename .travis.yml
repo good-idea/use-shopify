@@ -21,7 +21,4 @@ jobs:
       deploy:
         provider: script
         skip_cleanup: true
-        script:
-          - yarn build
-          - yarn semantic-release
-          - yarn test:coverage:send
+        script: yarn build && yarn semantic-release && yarn test:coverage:send
