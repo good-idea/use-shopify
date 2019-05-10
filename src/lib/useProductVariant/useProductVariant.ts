@@ -13,11 +13,10 @@ export interface UseProductVariant {
   selectVariant: (variantId: string) => void;
 }
 
-export const useProductVariant = (product?: Product, options: Options = {}) => {
+export const useProductVariant = (product: Product, options: Options = {}) => {
   const { initialVariant } = options;
-  const [variants] =
-    product && product.variants ? unwindEdges(product.variants) : [[]];
-
+  const [variants] = unwindEdges(product.variants);
+  if (!variants.length) throw new Error('The supplied product has no variants');
   /**
    * Private Methods
    */
@@ -36,11 +35,6 @@ export const useProductVariant = (product?: Product, options: Options = {}) => {
   const getInitialState = (): Variant => {
     if (!initialVariant || initialVariant === 'first') return variants[0];
     if (initialVariant === 'last') return variants[variants.length - 1];
-    if (typeof initialVariant !== 'string') {
-      throw new Error(
-        'The initialVariant option must be either `first`, `last`, or a variant ID'
-      );
-    }
     return findVariant(initialVariant);
   };
 

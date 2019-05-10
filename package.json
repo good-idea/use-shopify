@@ -1,6 +1,6 @@
 {
   "name": "use-shopify",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "React hooks to work with Shopify's Storefront API",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
@@ -19,20 +19,21 @@
     "fix:tslint": "tslint --fix --project .",
     "test": "run-s build test:lint test:unit",
     "test:lint": "tslint --project . && prettier \"src/**/*.ts\" --list-different",
-    "test:unit": "jest",
+    "test:unit": "jest --collectCoverage",
     "test:watch": "jest --watch",
-    "test:coverage:open": "yarn test:coverage && opn coverage/lcov-report/index.html",
+    "test:coverage:open": "yarn test:unit && opn coverage/lcov-report/index.html",
     "test:coverage:send": "codecov",
     "watch": "run-s clean build:main && run-p \"build:main -- -w\" \"test:unit -- --watch\"",
     "doc": "run-s doc:html && opn build/docs/index.html",
     "doc:html": "typedoc src/ --exclude **/*.spec.ts --target ES6 --mode file --out build/docs",
     "doc:json": "typedoc src/ --exclude **/*.spec.ts --target ES6 --mode file --json build/docs/typedoc.json",
     "doc:publish": "gh-pages -m \"[ci skip] Updates\" -d build/docs",
-    "version": "np",
+    "release": "np",
     "reset": "git clean -dfx && git reset --hard && npm i",
     "clean": "trash build test",
     "prepare-release": "run-s all version doc:publish",
-    "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('use-shopify must be installed with Yarn: https://yarnpkg.com/')\""
+    "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('use-shopify must be installed with Yarn: https://yarnpkg.com/')\"",
+    "semantic-release": "semantic-release"
   },
   "scripts-info": {
     "info": "Display information about the package scripts",
@@ -51,9 +52,14 @@
     "node": ">=8.9"
   },
   "dependencies": {
+    "@commitlint/prompt": "^7.6.1",
     "urql": "^1.0.5"
   },
   "devDependencies": {
+    "@commitlint/cli": "^7.5.2",
+    "@commitlint/config-conventional": "^7.5.0",
+    "@semantic-release/changelog": "^3.0.2",
+    "@semantic-release/git": "^7.0.8",
     "@types/gh-pages": "^2.0.0",
     "@types/graphql": "^14.2.0",
     "@types/jest": "^24.0.12",
@@ -66,14 +72,16 @@
     "gh-pages": "^2.0.1",
     "husky": "^2.2.0",
     "jest": "^24.8.0",
-    "np": "^5.0.1",
     "npm-run-all": "^4.1.5",
     "opn-cli": "^4.0.0",
     "prettier": "^1.15.2",
     "pretty-quick": "^1.10.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-hooks-testing-library": "^0.5.0",
+    "react-test-renderer": "^16.8.6",
     "react-testing-library": "^7.0.0",
+    "semantic-release": "^15.13.12",
     "standard-version": "^4.4.0",
     "trash-cli": "^1.4.0",
     "ts-jest": "^24.0.2",
@@ -88,7 +96,9 @@
     "react": "^16.8.0",
     "react-dom": "^16.8.0"
   },
-  "files": ["./build"],
+  "files": [
+    "./build"
+  ],
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
@@ -96,7 +106,7 @@
   },
   "husky": {
     "hooks": {
-      "prepare-commit-msg": "exec < /dev/tty && git cz --hook",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "pretty-quick --staged"
     }
   },
