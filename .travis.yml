@@ -21,6 +21,6 @@ jobs:
         skip_cleanup: true
         script:
           - npx semantic-release
+        after_success:
+          - yarn test:coverage:send
       if: branch = master
-      after_success:
-        - yarn test:coverage:send
