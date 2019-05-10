@@ -103,7 +103,7 @@
     "react-dom": "^16.8.0"
   },
   "files": [
-    "./build"
+    "build"
   ],
   "config": {
     "commitizen": {

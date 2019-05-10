@@ -8,8 +8,8 @@ cache:
     - node_modules
 jobs:
   include:
-    # - stage: test
-    #   script: yarn test
+    - stage: test
+      script: yarn test
     - stage: release
       if: branch = master
       node_js: lts/*
