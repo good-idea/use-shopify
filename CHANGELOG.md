@@ -1,3 +1,11 @@
+## [0.1.7](https://github.com/good-idea/use-shopify/compare/v0.1.6...v0.1.7) (2019-05-10)
+
+
+### Bug Fixes
+
+* **repo:** fix published files ([19a3fa7](https://github.com/good-idea/use-shopify/commit/19a3fa7))
+* **use-shopify:** test fix for semantic-release ([42c7bd7](https://github.com/good-idea/use-shopify/commit/42c7bd7))
+
 ## [0.1.6](https://github.com/good-idea/use-shopify/compare/v0.1.5...v0.1.6) (2019-05-10)
 
 
