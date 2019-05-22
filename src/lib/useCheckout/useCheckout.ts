@@ -26,19 +26,20 @@ interface AddToCheckoutArgs {
   note?: string;
 }
 
+interface CreateCheckoutArgs extends Partial<AddToCheckoutArgs> {
+  // shippingAddress: Address
+}
+
 interface CheckoutState {
   loading: boolean;
-  isOpen: boolean;
   userErrors: UserError[];
   currentCheckout: Checkout | void;
 }
 
 export interface UseCheckoutProps extends CheckoutState {
-  openCheckout: () => void;
-  closeCheckout: () => void;
   addToCheckout: (args: AddToCheckoutArgs) => Promise<void>;
   addItemToCheckout: (args: AddLineItem) => Promise<void>;
-  updateQuantity: (item: CheckoutLineItem) => (qty: number) => Promise<void>;
+  updateQuantity: (item: CheckoutLineItem, qty: number) => Promise<void>;
   applyDiscount: (code: string) => Promise<void>;
   removeDiscount: () => Promise<void>;
 }
@@ -51,20 +52,9 @@ const { useReducer } = React;
 
 const initialState = {
   loading: false,
-  isOpen: false,
   userErrors: [],
   currentCheckout: undefined
 };
-
-// export const defaultCheckoutProps = {
-//   ...initialState,
-//   addToCheckout: async () => undefined,
-//   applyDiscount: async () => undefined,
-//   closeCheckout: () => undefined,
-//   openCheckout: () => undefined,
-//   removeDiscount: async () => undefined,
-//   updateQuantity: () => async () => undefined
-// };
 
 /**
  * State
@@ -76,17 +66,11 @@ interface Action {
   userErrors?: UserError[];
 }
 
-const OPEN_CHECKOUT = 'OPEN_CHECKOUT';
-const CLOSE_CHECKOUT = 'CLOSE_CHECKOUT';
 const STARTED_REQUEST = 'STARTED_REQUEST';
 const FINISHED_REQUEST = 'FINISHED_REQUEST';
 
 const reducer = (state: CheckoutState, action: Action): CheckoutState => {
   switch (action.type) {
-    case OPEN_CHECKOUT:
-      return { ...state, isOpen: true };
-    case CLOSE_CHECKOUT:
-      return { ...state, isOpen: false };
     case STARTED_REQUEST:
       return { ...state, loading: true };
     case FINISHED_REQUEST:
@@ -112,11 +96,19 @@ export const useCheckout = (): UseCheckoutProps => {
   const checkoutId = currentCheckout ? currentCheckout.id : undefined;
 
   /**
-   * Methods
+   * Private Methods
    */
 
-  const openCheckout = () => dispatch({ type: OPEN_CHECKOUT });
-  const closeCheckout = () => dispatch({ type: CLOSE_CHECKOUT });
+  const getOrcreateCheckout = async (args: CreateCheckoutArgs) => {
+    dispatch({ type: STARTED_REQUEST });
+    if (currentCheckout) return currentCheckout;
+    const result = await createMutation({ ...args });
+    return result.data.checkoutCreate;
+  };
+
+  /**
+   * Public Methods
+   */
 
   const addToCheckout = async (args: AddToCheckoutArgs) => {
     const checkoutExists = Boolean(currentCheckout);
@@ -130,16 +122,13 @@ export const useCheckout = (): UseCheckoutProps => {
     const resultKey = checkoutExists
       ? 'checkoutLineItemsAdd'
       : 'checkoutCreate';
-    // const { userErrors, checkout } = result.data.checkoutLineItemsAdd
     dispatch({ type: FINISHED_REQUEST, ...result.data[resultKey] });
   };
 
   const addItemToCheckout = async (lineItem: AddLineItem) =>
     addToCheckout({ lineItems: [lineItem] });
 
-  const updateQuantity = (item: CheckoutLineItem) => async (
-    quantity: number
-  ) => {
+  const updateQuantity = async (item: CheckoutLineItem, quantity: number) => {
     if (!currentCheckout) throw new Error('There is no checkout to update');
     dispatch({ type: STARTED_REQUEST });
     const result = await updateLineItemMutation({
@@ -155,6 +144,8 @@ export const useCheckout = (): UseCheckoutProps => {
   };
 
   const applyDiscount = async (discountCode: string) => {
+    const checkout = await getOrcreateCheckout({});
+    const checkoutId = checkout.id;
     dispatch({ type: STARTED_REQUEST });
     const result = await applyDiscountMutation({
       variables: {
@@ -175,6 +166,7 @@ export const useCheckout = (): UseCheckoutProps => {
         checkoutId
       }
     });
+    console.log(result.data.checkoutDiscountCodeRemove);
     dispatch({
       type: FINISHED_REQUEST,
       ...result.data.checkoutDiscountCodeRemove
@@ -183,8 +175,6 @@ export const useCheckout = (): UseCheckoutProps => {
 
   const value = {
     ...state,
-    openCheckout,
-    closeCheckout,
     addToCheckout,
     addItemToCheckout,
     updateQuantity,

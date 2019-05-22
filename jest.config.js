@@ -1,5 +1,7 @@
 module.exports = {
+  automock: false,
   moduleFileExtensions: ['js', 'ts', 'tsx', 'json'],
+  setupFiles: ['./setupJest.ts'],
   setupFilesAfterEnv: ['react-testing-library/cleanup-after-each'],
   testMatch: ['**/**/*.test.ts', '**/**/*.test.tsx'],
   coveragePathIgnorePatterns: [

@@ -7,7 +7,7 @@ const dummyImage = {
 };
 
 export const dummyProduct: Product = {
-  id: 123,
+  id: '123',
   handle: 'dummy-product',
   title: 'Dummy Product',
   description: 'Just a dumb thing you can buy!',
