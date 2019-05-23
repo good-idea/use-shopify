@@ -33,7 +33,7 @@ interface CreateCheckoutArgs extends Partial<AddToCheckoutArgs> {
 interface CheckoutState {
   loading: boolean;
   userErrors: UserError[];
-  currentCheckout: Checkout | void;
+  checkout: Checkout | void;
 }
 
 export interface UseCheckoutProps extends CheckoutState {
@@ -53,7 +53,7 @@ const { useReducer } = React;
 const initialState = {
   loading: false,
   userErrors: [],
-  currentCheckout: undefined
+  checkout: undefined
 };
 
 /**
@@ -62,7 +62,7 @@ const initialState = {
 
 interface Action {
   type: string;
-  currentCheckout?: Checkout;
+  checkout?: Checkout;
   userErrors?: UserError[];
 }
 
@@ -74,8 +74,8 @@ const reducer = (state: CheckoutState, action: Action): CheckoutState => {
     case STARTED_REQUEST:
       return { ...state, loading: true };
     case FINISHED_REQUEST:
-      const { userErrors, currentCheckout } = action;
-      return { ...state, userErrors, currentCheckout };
+      const { userErrors, checkout } = action;
+      return { ...state, userErrors, checkout };
     default:
       return state;
   }
@@ -92,8 +92,8 @@ export const useCheckout = (): UseCheckoutProps => {
   const [, applyDiscountMutation] = useMutation(APPLY_DISCOUNT_MUTATION);
   const [, removeDiscountMutation] = useMutation(REMOVE_DISCOUNT_MUTATION);
 
-  const { currentCheckout } = state;
-  const checkoutId = currentCheckout ? currentCheckout.id : undefined;
+  const { checkout } = state;
+  const checkoutId = checkout ? checkout.id : undefined;
 
   /**
    * Private Methods
@@ -101,7 +101,7 @@ export const useCheckout = (): UseCheckoutProps => {
 
   const getOrcreateCheckout = async (args: CreateCheckoutArgs) => {
     dispatch({ type: STARTED_REQUEST });
-    if (currentCheckout) return currentCheckout;
+    if (checkout) return checkout;
     const result = await createMutation({ ...args });
     return result.data.checkoutCreate;
   };
@@ -111,14 +111,13 @@ export const useCheckout = (): UseCheckoutProps => {
    */
 
   const addToCheckout = async (args: AddToCheckoutArgs) => {
-    const checkoutExists = Boolean(currentCheckout);
+    const checkoutExists = Boolean(checkout);
     const mutate = checkoutExists ? addMutation : createMutation;
     const variables = checkoutExists ? { checkoutId, ...args } : args;
 
     dispatch({ type: STARTED_REQUEST });
-    const result = await mutate({
-      variables
-    });
+    const result = await mutate(variables);
+    console.log(result);
     const resultKey = checkoutExists
       ? 'checkoutLineItemsAdd'
       : 'checkoutCreate';
@@ -129,13 +128,11 @@ export const useCheckout = (): UseCheckoutProps => {
     addToCheckout({ lineItems: [lineItem] });
 
   const updateQuantity = async (item: CheckoutLineItem, quantity: number) => {
-    if (!currentCheckout) throw new Error('There is no checkout to update');
+    if (!checkout) throw new Error('There is no checkout to update');
     dispatch({ type: STARTED_REQUEST });
     const result = await updateLineItemMutation({
-      variables: {
-        checkoutId,
-        lineItems: [{ id: item.id, variantId: item.variant.id, quantity }]
-      }
+      checkoutId,
+      lineItems: [{ id: item.id, variantId: item.variant.id, quantity }]
     });
     dispatch({
       type: FINISHED_REQUEST,
@@ -145,13 +142,10 @@ export const useCheckout = (): UseCheckoutProps => {
 
   const applyDiscount = async (discountCode: string) => {
     const checkout = await getOrcreateCheckout({});
-    const checkoutId = checkout.id;
     dispatch({ type: STARTED_REQUEST });
     const result = await applyDiscountMutation({
-      variables: {
-        checkoutId,
-        discountCode
-      }
+      checkoutId: checkout.id,
+      discountCode
     });
     dispatch({
       type: FINISHED_REQUEST,
@@ -162,9 +156,7 @@ export const useCheckout = (): UseCheckoutProps => {
   const removeDiscount = async () => {
     dispatch({ type: STARTED_REQUEST });
     const result = await removeDiscountMutation({
-      variables: {
-        checkoutId
-      }
+      checkoutId
     });
     console.log(result.data.checkoutDiscountCodeRemove);
     dispatch({

@@ -23,22 +23,21 @@ describe('useCheckout', () => {
   it('[addToCheckout] should create a new checkout if none exists', async () => {
     fetchMock.mockResponseOnce(
       JSON.stringify({
-        data: { checkoutCreate: { currentCheckout: { id: 'foo' } } }
+        data: { checkoutCreate: { checkout: { id: 'foo' } } }
       })
     );
     const { result } = renderHook(() => useCheckout());
-    const { currentCheckout, addToCheckout } = result.current;
+    const { checkout, addToCheckout } = result.current;
 
-    expect(currentCheckout).toBe(undefined);
+    expect(checkout).toBe(undefined);
     act(() => {
       addToCheckout({ lineItems: [dummyLineItemAdd] });
     });
 
     await wait();
-    if (!result.current.currentCheckout)
-      throw new Error('checkout was not created');
+    if (!result.current.checkout) throw new Error('checkout was not created');
 
-    expect(result.current.currentCheckout.id).toBe('foo');
+    expect(result.current.checkout.id).toBe('foo');
   });
 
   it('[addToCheckout] should add new items to the current checkout', async () => {
@@ -48,7 +47,7 @@ describe('useCheckout', () => {
         JSON.stringify({
           data: {
             checkoutCreate: {
-              currentCheckout: {
+              checkout: {
                 id: 'foo',
                 lineItems: [dummyLineItem]
               }
@@ -60,7 +59,7 @@ describe('useCheckout', () => {
         JSON.stringify({
           data: {
             checkoutLineItemsAdd: {
-              currentCheckout: {
+              checkout: {
                 id: 'foo',
                 lineItems: [
                   {
@@ -83,9 +82,8 @@ describe('useCheckout', () => {
       result.current.addToCheckout({ lineItems: [dummyLineItemAdd] });
     });
     await wait();
-    if (!result.current.currentCheckout)
-      throw new Error('checkout was not created');
-    expect(result.current.currentCheckout.lineItems[0].quantity).toBe(2);
+    if (!result.current.checkout) throw new Error('checkout was not created');
+    expect(result.current.checkout.lineItems[0].quantity).toBe(2);
   });
 
   it('[addItemToCheckout] should add a single item to the current checkout', async () => {
@@ -93,7 +91,7 @@ describe('useCheckout', () => {
       JSON.stringify({
         data: {
           checkoutCreate: {
-            currentCheckout: {
+            checkout: {
               id: 'foo',
               lineItems: [{ ...dummyLineItem, quantity: 3 }]
             }
@@ -107,9 +105,8 @@ describe('useCheckout', () => {
       result.current.addItemToCheckout({ ...dummyLineItemAdd, quantity: 3 });
     });
     await wait();
-    if (!result.current.currentCheckout)
-      throw new Error('checkout was not created');
-    expect(result.current.currentCheckout.lineItems[0].quantity).toBe(3);
+    if (!result.current.checkout) throw new Error('checkout was not created');
+    expect(result.current.checkout.lineItems[0].quantity).toBe(3);
   });
 
   it('[updateQuantity] should update the quantity of a given variant', async () => {
@@ -118,7 +115,7 @@ describe('useCheckout', () => {
         JSON.stringify({
           data: {
             checkoutCreate: {
-              currentCheckout: {
+              checkout: {
                 id: 'foo',
                 lineItems: [dummyLineItem]
               }
@@ -130,7 +127,7 @@ describe('useCheckout', () => {
         JSON.stringify({
           data: {
             checkoutLineItemsUpdate: {
-              currentCheckout: {
+              checkout: {
                 id: 'foo',
                 lineItems: [
                   {
@@ -152,9 +149,8 @@ describe('useCheckout', () => {
       result.current.updateQuantity(dummyLineItem, 100);
     });
     await wait();
-    if (!result.current.currentCheckout)
-      throw new Error('checkout was not created');
-    expect(result.current.currentCheckout.lineItems[0].quantity).toBe(100);
+    if (!result.current.checkout) throw new Error('checkout was not created');
+    expect(result.current.checkout.lineItems[0].quantity).toBe(100);
   });
 
   it('[applyDiscount] should create a checkout if none exists', async () => {
@@ -163,7 +159,7 @@ describe('useCheckout', () => {
         JSON.stringify({
           data: {
             checkoutCreate: {
-              currentCheckout: {
+              checkout: {
                 id: 'foo',
                 lineItems: [dummyLineItem]
               }
@@ -175,7 +171,7 @@ describe('useCheckout', () => {
         JSON.stringify({
           data: {
             checkoutDiscountCodeApplyV2: {
-              currentCheckout: {
+              checkout: {
                 id: 'foo',
                 lineItems: [dummyLineItem],
                 discountApplications: [
@@ -200,9 +196,8 @@ describe('useCheckout', () => {
       result.current.applyDiscount('specialDiscount');
     });
     await wait();
-    if (!result.current.currentCheckout)
-      throw new Error('checkout was not created');
-    expect(result.current.currentCheckout.id).toBe('foo');
+    if (!result.current.checkout) throw new Error('checkout was not created');
+    expect(result.current.checkout.id).toBe('foo');
   });
 
   it('[applyDiscount] should apply a discount code', async () => {
@@ -211,7 +206,7 @@ describe('useCheckout', () => {
         JSON.stringify({
           data: {
             checkoutCreate: {
-              currentCheckout: {
+              checkout: {
                 id: 'foo',
                 lineItems: [dummyLineItem]
               }
@@ -223,7 +218,7 @@ describe('useCheckout', () => {
         JSON.stringify({
           data: {
             checkoutDiscountCodeApplyV2: {
-              currentCheckout: {
+              checkout: {
                 id: 'foo',
                 lineItems: [dummyLineItem],
                 discountApplications: [
@@ -253,9 +248,8 @@ describe('useCheckout', () => {
     });
 
     await wait();
-    if (!result.current.currentCheckout)
-      throw new Error('checkout was not created');
-    expect(result.current.currentCheckout.discountApplications[0].code).toBe(
+    if (!result.current.checkout) throw new Error('checkout was not created');
+    expect(result.current.checkout.discountApplications[0].code).toBe(
       'specialDiscount'
     );
   });
@@ -266,7 +260,7 @@ describe('useCheckout', () => {
         JSON.stringify({
           data: {
             checkoutCreate: {
-              currentCheckout: {
+              checkout: {
                 id: 'foo',
                 lineItems: [dummyLineItem]
               }
@@ -278,7 +272,7 @@ describe('useCheckout', () => {
         JSON.stringify({
           data: {
             checkoutDiscountCodeApplyV2: {
-              currentCheckout: {
+              checkout: {
                 id: 'foo',
                 lineItems: [dummyLineItem],
                 discountApplications: [
@@ -302,7 +296,7 @@ describe('useCheckout', () => {
         JSON.stringify({
           data: {
             checkoutDiscountCodeRemove: {
-              currentCheckout: {
+              checkout: {
                 id: 'foo',
                 lineItems: [dummyLineItem]
               }
@@ -325,9 +319,8 @@ describe('useCheckout', () => {
       result.current.removeDiscount();
     });
     await wait();
-    if (!result.current.currentCheckout)
-      throw new Error('checkout was not created');
-    expect(result.current.currentCheckout.discountApplications).toBe(undefined);
+    if (!result.current.checkout) throw new Error('checkout was not created');
+    expect(result.current.checkout.discountApplications).toBe(undefined);
   });
 
   it('should return userErrors if the request returned errors', async () => {

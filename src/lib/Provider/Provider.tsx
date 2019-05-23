@@ -1,48 +1,34 @@
 import * as React from 'react';
-import { Client, createClient, Provider as UrqlProvider } from 'urql';
+import { useCheckout } from '../useCheckout';
 
 interface ShopifyContextValue {
-  client: Client;
+  checkout: any;
 }
 
-const ShopifyContext = React.createContext<Partial<ShopifyContextValue>>({});
+export const ShopifyContext = React.createContext<
+  ShopifyContextValue | undefined
+>(undefined);
 
 export const ShopifyConsumer = ShopifyContext.Consumer;
 
-export const useShopify = () => React.useContext(ShopifyContext);
+export const useShopify = () => {
+  const ctx = React.useContext(ShopifyContext);
+  if (!ctx)
+    throw new Error('`useShopify` must be used within a ShopifyProvider');
+  return ctx;
+};
 
 interface Props {
   children: React.ReactNode;
-  storefrontAccessToken: string;
-  storefrontName: string;
-  endpoint?: string;
 }
 
-export const ShopifyProvider = ({
-  children,
-  storefrontAccessToken,
-  storefrontName,
-  endpoint
-}: Props) => {
-  const url = endpoint || `https://${storefrontName}.myshopify.com/api/graphql`;
-  const client = createClient({
-    url,
-    fetchOptions: {
-      headers: {
-        'X-Shopify-Storefront-Access-Token': storefrontAccessToken
-      }
-    }
-  });
-
+export const ShopifyProvider = ({ children }: Props) => {
+  const checkout = useCheckout();
   const value = {
-    client
+    checkout
   };
 
   return (
-    <UrqlProvider value={client}>
-      <ShopifyContext.Provider value={value}>
-        {children}
-      </ShopifyContext.Provider>
-    </UrqlProvider>
+    <ShopifyContext.Provider value={value}>{children}</ShopifyContext.Provider>
   );
 };
