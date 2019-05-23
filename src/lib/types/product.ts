@@ -26,7 +26,7 @@ interface ProductPriceRange {
 }
 
 export interface Product {
-  id: number;
+  id: string;
   handle: string;
   title: string;
   description: string;
