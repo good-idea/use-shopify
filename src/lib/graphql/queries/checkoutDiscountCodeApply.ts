@@ -16,10 +16,12 @@ export type CheckoutDiscountCodeApplyV2Response = CheckoutResponse<
 
 export const APPLY_DISCOUNT_MUTATION = /* GraphQL */ `
 	mutation CheckoutDiscountCodeApplyV2(
-		$checkoutId: String
+		$checkoutId: ID!
+		$discountCode: String!
 	) {
 		checkoutDiscountCodeApplyV2(
       checkoutId: $checkoutId
+			discountCode: $discountCode
 		) {
 			checkoutUserErrors {
 				code

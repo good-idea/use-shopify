@@ -17,12 +17,9 @@ import { VIEWER_CART_TOKEN, setCookie, getCookie } from '../utils/storage';
 
 const { useReducer, useEffect } = React;
 
-interface CreateCheckoutArgs extends Partial<AddToCheckoutArgs> {
-  // shippingAddress: Address
-}
-
 interface CheckoutState {
   loading: boolean;
+  ready: boolean;
   checkoutUserErrors: UserError[];
   checkout: Checkout | void;
 }
@@ -32,6 +29,7 @@ interface CheckoutState {
  */
 
 const initialState = {
+  ready: false,
   loading: true,
   checkoutUserErrors: [],
   checkout: undefined
@@ -60,7 +58,8 @@ const reducer = (state: CheckoutState, action: Action): CheckoutState => {
         ...state,
         checkoutUserErrors: checkoutUserErrors || [],
         checkout,
-        loading: false
+        loading: false,
+        ready: true
       };
     default:
       return state;

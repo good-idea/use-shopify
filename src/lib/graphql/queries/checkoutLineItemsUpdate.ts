@@ -18,7 +18,7 @@ export type CheckoutLineItemsUpdateResponse = CheckoutResponse<
 
 export const UPDATE_ITEM_MUTATION = /* GraphQL */ `
 	mutation CheckoutLineItemsUpdate(
-		$checkoutId: String
+		$checkoutId: ID!
 	) {
 		checkoutLineItemsUpdate(
       checkoutId: $checkoutId

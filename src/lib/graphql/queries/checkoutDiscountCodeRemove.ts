@@ -15,7 +15,7 @@ export type CheckoutDiscountCodeRemoveResponse = CheckoutResponse<
 
 export const REMOVE_DISCOUNT_MUTATION = /* GraphQL */ `
 	mutation CheckoutDiscountCodeRemove(
-		$checkoutId: String
+		$checkoutId: ID!
 	) {
 		checkoutDiscountCodeRemove(
       checkoutId: $checkoutId
