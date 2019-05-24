@@ -145,11 +145,10 @@ export const useCheckout = (): UseCheckoutProps => {
 
   const applyDiscount = async (discountCode: string) => {
     const checkout = await getOrcreateCheckout({});
-    const checkoutId = checkout.id;
     dispatch({ type: STARTED_REQUEST });
     const result = await applyDiscountMutation({
       variables: {
-        checkoutId,
+        checkoutId: checkout.id,
         discountCode
       }
     });
