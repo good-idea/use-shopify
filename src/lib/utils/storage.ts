@@ -15,7 +15,10 @@ export const setCookie = (key: string, val: any, config?: CookieConfig) => {
     expires: 7,
     path: '/'
   };
-  const settings = Object.assign(defaults, config);
+  const settings = {
+    ...defaults,
+    ...config
+  };
   const stringified = JSON.stringify(val);
   Cookies.set(key, stringified, settings);
 };
@@ -49,11 +52,10 @@ export const retrieveData = <ExpectedResult>(
   key: string,
   forceCookie: boolean
 ): ExpectedResult => {
-  if (window.localStorage !== null && forceCookie !== true) {
-    const value = window.localStorage.getItem(key);
-    return JSON.parse(value);
-  }
-  const value = Cookies.get(key);
+  const value =
+    window.localStorage !== null && forceCookie !== true
+      ? window.localStorage.getItem(key)
+      : Cookies.get(key);
   if (value) return JSON.parse(value);
   return null;
 };

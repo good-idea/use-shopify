@@ -8718,7 +8718,7 @@ windows-release@^3.1.0:
   dependencies:
     execa "^1.0.0"
 
-wonka@^2.0.1:
+wonka@^2.0.1, wonka@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/wonka/-/wonka-2.0.2.tgz#6523631a0121b92f2ee5b95971a16335d1985e43"
   integrity sha512-xbWQpBlBOaNUeZj7IsgXMwE08HeomMQYkaUVoXIHgyAOk9bdfqOA9Ccw87cL1jgFbGOeXifO9OfgeL6vut9/8Q==

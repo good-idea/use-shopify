@@ -54,7 +54,8 @@
   "dependencies": {
     "@commitlint/prompt": "^7.6.1",
     "js-cookie": "^2.2.0",
-    "urql": "^1.0.5"
+    "urql": "^1.0.5",
+    "wonka": "^2.0.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.5.2",
