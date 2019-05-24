@@ -1,59 +1,36 @@
 import * as React from 'react';
-import { useMutation } from 'urql';
-import { Checkout, CheckoutLineItem } from '../types';
-
+import { Omit } from 'utility-types';
+import { Checkout } from '../types';
 import {
-  ADD_MUTATION,
-  APPLY_DISCOUNT_MUTATION,
-  CREATE_MUTATION,
-  REMOVE_DISCOUNT_MUTATION,
-  UPDATE_LINE_ITEM_MUTATION
-} from './mutations';
+  FetchCheckout,
+  CheckoutCreate,
+  CheckoutCreateInput,
+  CheckoutLineItemsAddInput,
+  CheckoutLineItemsAdd,
+  CheckoutLineItemInput,
+  CheckoutLineItemsUpdate,
+  CheckoutDiscountCodeApply,
+  CheckoutDiscountCodeRemove,
+  UserError
+} from '../graphql/queries';
+import { VIEWER_CART_TOKEN, setCookie, getCookie } from '../utils/storage';
 
-interface UserError {
-  field: string;
-  message: string;
-}
-
-interface AddLineItem {
-  variantId: string;
-  quantity: number;
-}
-
-interface AddToCheckoutArgs {
-  lineItems: AddLineItem[];
-  email?: string;
-  note?: string;
-}
-
-interface CreateCheckoutArgs extends Partial<AddToCheckoutArgs> {
-  // shippingAddress: Address
-}
+const { useReducer, useEffect } = React;
 
 interface CheckoutState {
   loading: boolean;
-  userErrors: UserError[];
-  currentCheckout: Checkout | void;
-}
-
-export interface UseCheckoutProps extends CheckoutState {
-  addToCheckout: (args: AddToCheckoutArgs) => Promise<void>;
-  addItemToCheckout: (args: AddLineItem) => Promise<void>;
-  updateQuantity: (item: CheckoutLineItem, qty: number) => Promise<void>;
-  applyDiscount: (code: string) => Promise<void>;
-  removeDiscount: () => Promise<void>;
+  checkoutUserErrors: UserError[];
+  checkout: Checkout | void;
 }
 
 /**
  * Setup
  */
 
-const { useReducer } = React;
-
 const initialState = {
-  loading: false,
-  userErrors: [],
-  currentCheckout: undefined
+  loading: true,
+  checkoutUserErrors: [],
+  checkout: undefined
 };
 
 /**
@@ -62,8 +39,8 @@ const initialState = {
 
 interface Action {
   type: string;
-  currentCheckout?: Checkout;
-  userErrors?: UserError[];
+  checkout?: Checkout;
+  checkoutUserErrors?: UserError[];
 }
 
 const STARTED_REQUEST = 'STARTED_REQUEST';
@@ -74,68 +51,114 @@ const reducer = (state: CheckoutState, action: Action): CheckoutState => {
     case STARTED_REQUEST:
       return { ...state, loading: true };
     case FINISHED_REQUEST:
-      const { userErrors, currentCheckout } = action;
-      return { ...state, userErrors, currentCheckout };
+      const { checkoutUserErrors, checkout } = action;
+      return {
+        ...state,
+        checkoutUserErrors: checkoutUserErrors || [],
+        checkout,
+        loading: false
+      };
     default:
       return state;
   }
 };
 
-export const useCheckout = (): UseCheckoutProps => {
+/**
+ * Helper Functions
+ */
+
+const setViewerCartCookie = (token: string) =>
+  setCookie(VIEWER_CART_TOKEN, token);
+const getViewerCartCookie = () => getCookie<string>(VIEWER_CART_TOKEN);
+// const removeViewerCartCookie = () => removeCookie(VIEWER_CART_TOKEN);
+
+export interface UseCheckoutQueries {
+  fetchCheckout: FetchCheckout;
+  checkoutCreate: CheckoutCreate;
+  checkoutLineItemsUpdate: CheckoutLineItemsUpdate;
+  checkoutLineItemsAdd: CheckoutLineItemsAdd;
+  checkoutDiscountCodeApply: CheckoutDiscountCodeApply;
+  checkoutDiscountCodeRemove: CheckoutDiscountCodeRemove;
+}
+
+type AddToCheckoutInput = Omit<CheckoutLineItemsAddInput, 'checkoutId'>;
+
+export interface UseCheckoutValues extends CheckoutState {
+  addToCheckout: (args: AddToCheckoutInput) => Promise<void>;
+  addItemToCheckout: (args: CheckoutLineItemInput) => Promise<void>;
+  updateQuantity: (variantId: string, quantity: number) => Promise<void>;
+  applyDiscount: (code: string) => Promise<void>;
+  removeDiscount: () => Promise<void>;
+}
+
+export const useCheckout = ({
+  fetchCheckout,
+  checkoutCreate,
+  checkoutLineItemsAdd,
+  checkoutLineItemsUpdate,
+  checkoutDiscountCodeApply,
+  checkoutDiscountCodeRemove
+}: UseCheckoutQueries): UseCheckoutValues => {
   /**
    * Hooks setup
    */
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const [, addMutation] = useMutation(ADD_MUTATION);
-  const [, createMutation] = useMutation(CREATE_MUTATION);
-  const [, updateLineItemMutation] = useMutation(UPDATE_LINE_ITEM_MUTATION);
-  const [, applyDiscountMutation] = useMutation(APPLY_DISCOUNT_MUTATION);
-  const [, removeDiscountMutation] = useMutation(REMOVE_DISCOUNT_MUTATION);
 
-  const { currentCheckout } = state;
-  const checkoutId = currentCheckout ? currentCheckout.id : undefined;
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   /**
    * Private Methods
    */
 
-  const getOrcreateCheckout = async (args: CreateCheckoutArgs) => {
-    dispatch({ type: STARTED_REQUEST });
-    if (currentCheckout) return currentCheckout;
-    const result = await createMutation({ ...args });
+  const getOrCreateCheckout = async (variables?: CheckoutCreateInput) => {
+    if (state.checkout) return { checkout: state.checkout };
+
+    const result = await checkoutCreate(variables);
+    if (result.data.checkoutCreate.checkout)
+      setViewerCartCookie(result.data.checkoutCreate.checkout.id);
     return result.data.checkoutCreate;
   };
+
+  /**
+   * On load, fetch the checkout if a token exists
+   */
+
+  useEffect(() => {
+    const fetchInitialCheckout = async () => {
+      const checkoutToken = getViewerCartCookie();
+      const variables = { id: checkoutToken };
+      const result = await fetchCheckout(variables);
+      const checkout = result.data ? result.data.node : undefined;
+      dispatch({ type: FINISHED_REQUEST, checkout });
+    };
+    fetchInitialCheckout();
+  }, []);
 
   /**
    * Public Methods
    */
 
-  const addToCheckout = async (args: AddToCheckoutArgs) => {
-    const checkoutExists = Boolean(currentCheckout);
-    const mutate = checkoutExists ? addMutation : createMutation;
-    const variables = checkoutExists ? { checkoutId, ...args } : args;
-
+  const addToCheckout = async (args: AddToCheckoutInput) => {
     dispatch({ type: STARTED_REQUEST });
-    const result = await mutate({
-      variables
-    });
-    const resultKey = checkoutExists
-      ? 'checkoutLineItemsAdd'
-      : 'checkoutCreate';
-    dispatch({ type: FINISHED_REQUEST, ...result.data[resultKey] });
+    const { checkout, checkoutUserErrors } = await getOrCreateCheckout();
+    if (checkoutUserErrors) {
+      dispatch({ type: FINISHED_REQUEST, checkout, checkoutUserErrors });
+    } else {
+      const variables = { checkoutId: checkout.id, ...args };
+      const result = await checkoutLineItemsAdd(variables);
+      dispatch({ type: FINISHED_REQUEST, ...result.data.checkoutLineItemsAdd });
+    }
   };
 
-  const addItemToCheckout = async (lineItem: AddLineItem) =>
+  const addItemToCheckout = async (lineItem: CheckoutLineItemInput) =>
     addToCheckout({ lineItems: [lineItem] });
 
-  const updateQuantity = async (item: CheckoutLineItem, quantity: number) => {
-    if (!currentCheckout) throw new Error('There is no checkout to update');
+  const updateQuantity = async (variantId: string, quantity: number) => {
+    const { checkout } = await getOrCreateCheckout();
+    if (!checkout) throw new Error('There is no checkout to update');
     dispatch({ type: STARTED_REQUEST });
-    const result = await updateLineItemMutation({
-      variables: {
-        checkoutId,
-        lineItems: [{ id: item.id, variantId: item.variant.id, quantity }]
-      }
+    const result = await checkoutLineItemsUpdate({
+      checkoutId: checkout.id,
+      lineItems: [{ variantId, quantity }]
     });
     dispatch({
       type: FINISHED_REQUEST,
@@ -144,13 +167,11 @@ export const useCheckout = (): UseCheckoutProps => {
   };
 
   const applyDiscount = async (discountCode: string) => {
-    const checkout = await getOrcreateCheckout({});
+    const { checkout } = await getOrCreateCheckout();
     dispatch({ type: STARTED_REQUEST });
-    const result = await applyDiscountMutation({
-      variables: {
-        checkoutId: checkout.id,
-        discountCode
-      }
+    const result = await checkoutDiscountCodeApply({
+      checkoutId: checkout.id,
+      discountCode
     });
     dispatch({
       type: FINISHED_REQUEST,
@@ -159,13 +180,12 @@ export const useCheckout = (): UseCheckoutProps => {
   };
 
   const removeDiscount = async () => {
+    const { checkout } = await getOrCreateCheckout();
+
     dispatch({ type: STARTED_REQUEST });
-    const result = await removeDiscountMutation({
-      variables: {
-        checkoutId
-      }
+    const result = await checkoutDiscountCodeRemove({
+      checkoutId: checkout.id
     });
-    console.log(result.data.checkoutDiscountCodeRemove);
     dispatch({
       type: FINISHED_REQUEST,
       ...result.data.checkoutDiscountCodeRemove
