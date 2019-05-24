@@ -17,6 +17,10 @@ import { VIEWER_CART_TOKEN, setCookie, getCookie } from '../utils/storage';
 
 const { useReducer, useEffect } = React;
 
+interface CreateCheckoutArgs extends Partial<AddToCheckoutArgs> {
+  // shippingAddress: Address
+}
+
 interface CheckoutState {
   loading: boolean;
   checkoutUserErrors: UserError[];

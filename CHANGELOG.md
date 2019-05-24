@@ -1,3 +1,10 @@
+## [0.2.1](https://github.com/good-idea/use-shopify/compare/v0.2.0...v0.2.1) (2019-05-23)
+
+
+### Bug Fixes
+
+* **use-shopify:** simplify useCheckout ([#13](https://github.com/good-idea/use-shopify/issues/13)) ([09de758](https://github.com/good-idea/use-shopify/commit/09de758))
+
 # [0.2.0](https://github.com/good-idea/use-shopify/compare/v0.1.7...v0.2.0) (2019-05-10)
 
 
