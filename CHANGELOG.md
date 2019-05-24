@@ -1,3 +1,19 @@
+# [0.3.0](https://github.com/good-idea/use-shopify/compare/v0.2.1...v0.3.0) (2019-05-24)
+
+
+### Bug Fixes
+
+* **use-shopify:** fix up queries ([a27c3e2](https://github.com/good-idea/use-shopify/commit/a27c3e2))
+* **use-shopify:** inject queries into useCheckout ([97e76a2](https://github.com/good-idea/use-shopify/commit/97e76a2))
+* **use-shopify:** keep checkout state at top level ([3f02f64](https://github.com/good-idea/use-shopify/commit/3f02f64))
+* **use-shopify:** simplify useCheckout ([c8fa96e](https://github.com/good-idea/use-shopify/commit/c8fa96e))
+
+
+### Features
+
+* **use-shopify:** remove urql provider ([504f15e](https://github.com/good-idea/use-shopify/commit/504f15e))
+* **use-shopify:** remove urql provider ([#16](https://github.com/good-idea/use-shopify/issues/16)) ([b019ada](https://github.com/good-idea/use-shopify/commit/b019ada))
+
 ## [0.2.1](https://github.com/good-idea/use-shopify/compare/v0.2.0...v0.2.1) (2019-05-23)
 
 
