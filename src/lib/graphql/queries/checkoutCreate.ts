@@ -21,7 +21,7 @@ export interface CheckoutCreateInput {
 
 export type CheckoutCreateResponse = CheckoutResponse<'checkoutCreate'>;
 
-export const CREATE_MUTATION = /* GraphQL */ `
+export const CREATE_CHECKOUT_MUTATION = /* GraphQL */ `
 	mutation CheckoutCreate(
 		$email: String
 		$lineItems: [CheckoutLineItemInput!]

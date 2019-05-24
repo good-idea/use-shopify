@@ -72,7 +72,7 @@ const setViewerCartCookie = (token: string) =>
 const getViewerCartCookie = () => getCookie<string>(VIEWER_CART_TOKEN);
 // const removeViewerCartCookie = () => removeCookie(VIEWER_CART_TOKEN);
 
-export interface UseCheckoutInput {
+export interface UseCheckoutQueries {
   fetchCheckout: FetchCheckout;
   checkoutCreate: CheckoutCreate;
   checkoutLineItemsUpdate: CheckoutLineItemsUpdate;
@@ -98,7 +98,7 @@ export const useCheckout = ({
   checkoutLineItemsUpdate,
   checkoutDiscountCodeApply,
   checkoutDiscountCodeRemove
-}: UseCheckoutInput): UseCheckoutValues => {
+}: UseCheckoutQueries): UseCheckoutValues => {
   /**
    * Hooks setup
    */

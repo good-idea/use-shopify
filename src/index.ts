@@ -4,3 +4,4 @@ export * from './lib/types';
 export * from './lib/useProductVariant';
 // export * from './lib/useFetchProductByHandle';
 export * from './lib/hooks';
+export { createUrqlQueries } from './lib/utils/urql';

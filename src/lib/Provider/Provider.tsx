@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useCheckout } from '../useCheckout';
+import { useCheckout, UseCheckoutQueries } from '../useCheckout';
 
 interface ShopifyContextValue {
   checkout: any;
@@ -20,10 +20,11 @@ export const useShopify = () => {
 
 interface Props {
   children: React.ReactNode;
+  queries: UseCheckoutQueries;
 }
 
-export const ShopifyProvider = ({ children }: Props) => {
-  const checkout = useCheckout();
+export const ShopifyProvider = ({ children, queries }: Props) => {
+  const checkout = useCheckout(queries);
   const value = {
     checkout
   };
