@@ -1,3 +1,11 @@
+## [0.3.1](https://github.com/good-idea/use-shopify/compare/v0.3.0...v0.3.1) (2019-05-24)
+
+
+### Bug Fixes
+
+* **use-shopify:** export UseCheckoutValues interface ([132a5be](https://github.com/good-idea/use-shopify/commit/132a5be))
+* **use-shopify:** export UseCheckoutValues interface ([#17](https://github.com/good-idea/use-shopify/issues/17)) ([677dbdd](https://github.com/good-idea/use-shopify/commit/677dbdd))
+
 # [0.3.0](https://github.com/good-idea/use-shopify/compare/v0.2.1...v0.3.0) (2019-05-24)
 
 
