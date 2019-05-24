@@ -7,7 +7,7 @@
     "no-implicit-dependencies": [true, "dev"],
     "curly": false,
     "object-literal-sort-keys": false,
-
+    "ordered-imports": false,
     /* tslint-immutable rules */
     // Recommended built-in rules
     "no-var-keyword": true,
