@@ -15,7 +15,7 @@ value {
 		currencyCode
 	}
 }
-`;
+`
 
 export const checkoutFields = /* GraphQL */ `
 id
@@ -77,4 +77,4 @@ lineItems(first: 100) {
 		}
 	}
 }
-`;
+`

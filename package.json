@@ -123,9 +123,6 @@
       "pre-commit": "pretty-quick --staged"
     }
   },
-  "prettier": {
-    "singleQuote": true
-  },
   "nyc": {
     "exclude": [
       "**/*.spec.js"

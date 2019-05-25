@@ -1,18 +1,14 @@
-import { CheckoutResponse } from './sharedTypes';
-import { checkoutFields } from '../fragments';
+import { CheckoutResponse } from './sharedTypes'
+import { checkoutFields } from '../fragments'
 
-export type CheckoutDiscountCodeApply = (
-  input: CheckoutDiscountCodeApplyInput
-) => CheckoutDiscountCodeApplyV2Response;
+export type CheckoutDiscountCodeApply = (input: CheckoutDiscountCodeApplyInput) => CheckoutDiscountCodeApplyV2Response
 
 export interface CheckoutDiscountCodeApplyInput {
-  checkoutId: string;
-  discountCode: string;
+	checkoutId: string
+	discountCode: string
 }
 
-export type CheckoutDiscountCodeApplyV2Response = CheckoutResponse<
-  'checkoutDiscountCodeApplyV2'
->;
+export type CheckoutDiscountCodeApplyV2Response = CheckoutResponse<'checkoutDiscountCodeApplyV2'>
 
 export const APPLY_DISCOUNT_MUTATION = /* GraphQL */ `
 	mutation CheckoutDiscountCodeApplyV2(
@@ -33,4 +29,4 @@ export const APPLY_DISCOUNT_MUTATION = /* GraphQL */ `
 			}
 		}
 	}
-`;
+`

@@ -1,17 +1,13 @@
-import { CheckoutResponse } from './sharedTypes';
-import { checkoutFields } from '../fragments';
+import { CheckoutResponse } from './sharedTypes'
+import { checkoutFields } from '../fragments'
 
-export type CheckoutDiscountCodeRemove = (
-  input: CheckoutDiscountCodeRemoveInput
-) => CheckoutDiscountCodeRemoveResponse;
+export type CheckoutDiscountCodeRemove = (input: CheckoutDiscountCodeRemoveInput) => CheckoutDiscountCodeRemoveResponse
 
 export interface CheckoutDiscountCodeRemoveInput {
-  checkoutId: string;
+	checkoutId: string
 }
 
-export type CheckoutDiscountCodeRemoveResponse = CheckoutResponse<
-  'checkoutDiscountCodeRemove'
->;
+export type CheckoutDiscountCodeRemoveResponse = CheckoutResponse<'checkoutDiscountCodeRemove'>
 
 export const REMOVE_DISCOUNT_MUTATION = /* GraphQL */ `
 	mutation CheckoutDiscountCodeRemove(
@@ -30,4 +26,4 @@ export const REMOVE_DISCOUNT_MUTATION = /* GraphQL */ `
 			}
 		}
 	}
-`;
+`

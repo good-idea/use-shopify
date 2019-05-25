@@ -1,18 +1,14 @@
-import { CheckoutResponse, CheckoutLineItemInput } from './sharedTypes';
-import { checkoutFields } from '../fragments';
+import { CheckoutResponse, CheckoutLineItemInput } from './sharedTypes'
+import { checkoutFields } from '../fragments'
 
-export type CheckoutLineItemsAdd = (
-  input: CheckoutLineItemsAddInput
-) => CheckoutLineItemsAddResponse;
+export type CheckoutLineItemsAdd = (input: CheckoutLineItemsAddInput) => CheckoutLineItemsAddResponse
 
 export interface CheckoutLineItemsAddInput {
-  checkoutId: string;
-  lineItems: CheckoutLineItemInput[];
+	checkoutId: string
+	lineItems: CheckoutLineItemInput[]
 }
 
-export type CheckoutLineItemsAddResponse = CheckoutResponse<
-  'checkoutLineItemsAdd'
->;
+export type CheckoutLineItemsAddResponse = CheckoutResponse<'checkoutLineItemsAdd'>
 
 export const ADD_ITEM_MUTATION = /* GraphQL */ `
 	mutation CheckoutLineItemsAdd(
@@ -33,4 +29,4 @@ export const ADD_ITEM_MUTATION = /* GraphQL */ `
 			}
 		}
 	}
-`;
+`

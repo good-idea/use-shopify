@@ -1,16 +1,16 @@
-import { Checkout } from '../../types';
-import { checkoutFields } from '../fragments';
+import { Checkout } from '../../types'
+import { checkoutFields } from '../fragments'
 
 export type FetchCheckout = (
-  input: FetchCheckoutInput
+	input: FetchCheckoutInput,
 ) => Promise<{
-  data: {
-    node: Checkout;
-  };
-}>;
+	data: {
+		node: Checkout
+	}
+}>
 
 interface FetchCheckoutInput {
-  id: string;
+	id: string
 }
 
 export const FETCH_CHECKOUT_QUERY = /* GraphQL */ `
@@ -22,4 +22,4 @@ export const FETCH_CHECKOUT_QUERY = /* GraphQL */ `
       }
     }
   }
-`;
+`

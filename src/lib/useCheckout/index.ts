@@ -1,1 +1,1 @@
-export * from './useCheckout';
+export * from './useCheckout'
