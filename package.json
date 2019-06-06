@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "@commitlint/prompt": "^8.0.0",
+    "@testing-library/react": "^8.0.1",
     "js-cookie": "^2.2.0",
     "urql": "^1.0.5",
     "wonka": "^3.0.0"
@@ -92,7 +93,6 @@
     "react-dom": "16.9.0-alpha.0",
     "react-hooks-testing-library": "^0.5.1",
     "react-test-renderer": "16.9.0-alpha.0",
-    "react-testing-library": "^8.0.1",
     "semantic-release": "^15.13.12",
     "standard-version": "^6.0.1",
     "trash-cli": "^3.0.0",

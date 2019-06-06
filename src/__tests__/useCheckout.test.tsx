@@ -1,5 +1,5 @@
 import { act, renderHook } from 'react-hooks-testing-library'
-import { wait, cleanup } from 'react-testing-library'
+import { wait, cleanup } from '@testing-library/react'
 import { useCheckout } from '../useCheckout'
 import { dummyProduct } from './stubs'
 

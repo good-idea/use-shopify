@@ -17,6 +17,7 @@ const createHelpers = (client: Client) => {
 				const variables = newVariables || initialVariables
 				const request = createRequest(query, variables)
 				pipe(
+					// @ts-ignore TODO What's up with that?
 					client.executeQuery(request),
 					subscribe(resolve),
 				)
