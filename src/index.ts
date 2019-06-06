@@ -1,6 +1,6 @@
-export * from './lib/Provider/Provider';
-export * from './lib/types';
-export * from './lib/useProductVariant';
-export * from './lib/hooks';
-export { UseCheckoutValues } from './lib/useCheckout';
-export { createUrqlQueries } from './lib/utils/urql';
+export * from './Provider/Provider'
+export * from './types'
+export * from './useProductVariant'
+export * from './hooks'
+export { UseCheckoutValues } from './useCheckout'
+export { createUrqlQueries } from './utils/urql'

@@ -52,14 +52,15 @@
     "node": ">=8.9"
   },
   "dependencies": {
-    "@commitlint/prompt": "^7.6.1",
+    "@commitlint/prompt": "^8.0.0",
+    "@testing-library/react": "^8.0.1",
     "js-cookie": "^2.2.0",
     "urql": "^1.0.5",
-    "wonka": "^2.0.2"
+    "wonka": "^3.0.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^7.5.2",
-    "@commitlint/config-conventional": "^7.5.0",
+    "@commitlint/cli": "^8.0.0",
+    "@commitlint/config-conventional": "^8.0.0",
     "@semantic-release/changelog": "^3.0.2",
     "@semantic-release/commit-analyzer": "^6.1.0",
     "@semantic-release/exec": "^3.3.2",
@@ -69,45 +70,44 @@
     "@semantic-release/release-notes-generator": "^7.1.4",
     "@types/gh-pages": "^2.0.0",
     "@types/graphql": "^14.2.0",
-    "@types/jest": "^24.0.12",
-    "@types/prettier": "^1.16.3",
-    "@types/react": "^16.8.17",
+    "@types/jest": "^24.0.13",
+    "@types/prettier": "^1.16.4",
+    "@types/react": "^16.8.19",
     "@types/react-dom": "^16.8.4",
     "@types/react-test-renderer": "^16.8.1",
     "@types/semantic-release": "^15.13.0",
-    "codecov": "^3.1.0",
+    "codecov": "^3.5.0",
     "commitizen": "^3.1.1",
     "cz-conventional-changelog": "^2.1.0",
     "gh-pages": "^2.0.1",
     "graphql": "^14.3.0",
-    "husky": "^2.2.0",
+    "husky": "^2.4.0",
     "jest": "^24.8.0",
     "jest-fetch-mock": "^2.1.2",
     "markdown-toc": "^1.2.0",
     "npm-run-all": "^4.1.5",
-    "opn-cli": "^4.0.0",
-    "prettier": "^1.15.2",
-    "pretty-quick": "^1.10.0",
+    "opn-cli": "^5.0.0",
+    "prettier": "^1.17.1",
+    "pretty-quick": "^1.11.0",
     "react": "16.9.0-alpha.0",
     "react-dom": "16.9.0-alpha.0",
-    "react-hooks-testing-library": "^0.5.0",
+    "react-hooks-testing-library": "^0.5.1",
     "react-test-renderer": "16.9.0-alpha.0",
-    "react-testing-library": "^7.0.0",
     "semantic-release": "^15.13.12",
-    "standard-version": "^4.4.0",
-    "trash-cli": "^1.4.0",
+    "standard-version": "^6.0.1",
+    "trash-cli": "^3.0.0",
     "ts-jest": "^24.0.2",
-    "tslint": "^5.11.0",
-    "tslint-config-prettier": "^1.17.0",
-    "tslint-immutable": "^5.0.0",
-    "typedoc": "^0.13.0",
-    "typescript": "^3.1.6",
+    "tslint": "^5.17.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-immutable": "^6.0.0",
+    "typedoc": "^0.14.2",
+    "typescript": "^3.5.1",
     "utility-types": "^3.7.0"
   },
   "peerDependencies": {
-    "graphql": "^14.0.0",
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0"
+    "graphql": "^14.3.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
   },
   "files": [
     "build"
@@ -122,9 +122,6 @@
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "pretty-quick --staged"
     }
-  },
-  "prettier": {
-    "singleQuote": true
   },
   "nyc": {
     "exclude": [
