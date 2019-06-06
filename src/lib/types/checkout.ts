@@ -1,16 +1,17 @@
 import { MailingAddress } from './customer'
-import { Money, Variant } from './product'
+import { Variant } from './product'
+import { MoneyV2, CurrencyCode } from './money'
 
 interface AppliedGiftCard {
-	amountUsed: Money
-	balance: Money
+	amountUsedV2: MoneyV2
+	balanceV2: MoneyV2
 	id: string
 	lastCharacters: string
 }
 
 interface ShippingRate {
 	handle: string
-	price: Money
+	priceV2: MoneyV2
 	title: string
 }
 
@@ -22,13 +23,6 @@ interface AvailableShippingRates {
 interface Attribute {
 	key: string
 	value: string
-}
-
-type CurrencyCode = 'USD'
-
-interface MoneyV2 {
-	amount: string
-	currencyCode: CurrencyCode
 }
 
 interface PricingPercentageValue {
@@ -91,17 +85,17 @@ export interface Checkout {
 	note?: string
 	order?: Order
 	orderStatusUrl?: string | null
-	paymentDue?: Money
+	paymentDueV2?: MoneyV2
 	ready?: boolean
 	requiresShipping?: boolean
 	shippingAddress?: MailingAddress
 	shippingDiscountAllocations?: DiscountAllocation[]
 	shippingLine?: ShippingRate
-	subtotalPrice?: Money
+	subtotalPriceV2?: MoneyV2
 	taxExempt?: boolean
 	taxesIncluded?: boolean
-	totalPrice?: Money
-	totalTax?: Money
+	totalPriceV2?: MoneyV2
+	totalTaxV2?: MoneyV2
 	updatedAt?: Date
 	webUrl?: string
 }

@@ -1,8 +1,7 @@
 import { Collection } from './collection'
 import { Paginated } from './graphql'
 import { ShopifyImage } from './media'
-
-export type Money = string
+import { MoneyV2 } from './money'
 
 interface SelectedOption {
 	name: string
@@ -21,8 +20,8 @@ export interface Variant {
 }
 
 interface ProductPriceRange {
-	minVariantPrice: Money
-	maxVariantPrice: Money
+	minVariantPrice: MoneyV2
+	maxVariantPrice: MoneyV2
 }
 
 export interface Product {
