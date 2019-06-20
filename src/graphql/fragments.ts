@@ -20,7 +20,10 @@ value {
 export const checkoutFields = /* GraphQL */ `
 id
 email
-paymentDue
+paymentDueV2 {
+  amount
+  currencyCode
+}
 webUrl
 completedAt
 shippingLine {
@@ -63,7 +66,10 @@ lineItems(first: 100) {
 			variant {
 				id
 				title
-				price
+        priceV2 {
+          amount
+          currencyCode
+        }
 				product {
 					id
 					title
