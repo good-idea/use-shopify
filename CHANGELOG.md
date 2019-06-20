@@ -1,3 +1,10 @@
+## [0.3.3](https://github.com/good-idea/use-shopify/compare/v0.3.2...v0.3.3) (2019-06-20)
+
+
+### Bug Fixes
+
+* **use-shopify:** update checkout fields to MoneyV2 ([92135a5](https://github.com/good-idea/use-shopify/commit/92135a5))
+
 ## [0.3.2](https://github.com/good-idea/use-shopify/compare/v0.3.1...v0.3.2) (2019-06-06)
 
 
