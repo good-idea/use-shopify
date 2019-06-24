@@ -1,4 +1,4 @@
-import { Paginated } from './graphql'
+import { Paginated } from '@good-idea/unwind-edges'
 import { ShopifyImage } from './media'
 import { Product } from './product'
 

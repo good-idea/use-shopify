@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { unwindEdges } from '../graphql/utils'
+import { unwindEdges } from '@good-idea/unwind-edges'
 import { Product, Variant } from '../types'
 
 const { useState } = React

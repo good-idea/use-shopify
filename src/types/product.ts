@@ -1,5 +1,5 @@
+import { Paginated } from '@good-idea/unwind-edges'
 import { Collection } from './collection'
-import { Paginated } from './graphql'
 import { ShopifyImage } from './media'
 import { MoneyV2 } from './money'
 

@@ -17,7 +17,7 @@ export const dummyProduct: Product = {
 			hasNextPage: false,
 			hasPrevPage: false,
 		},
-		edges: [{ cursor: 1, node: dummyImage }, { cursor: 2, node: dummyImage }],
+		edges: [{ cursor: '1', node: dummyImage }, { cursor: '2', node: dummyImage }],
 	},
 	variants: {
 		pageInfo: {
@@ -26,7 +26,7 @@ export const dummyProduct: Product = {
 		},
 		edges: [
 			{
-				cursor: 234,
+				cursor: '234',
 				node: {
 					id: 'abc',
 					availableForSale: true,
@@ -36,7 +36,7 @@ export const dummyProduct: Product = {
 				},
 			},
 			{
-				cursor: 345,
+				cursor: '345',
 				node: {
 					id: 'bcd',
 					availableForSale: true,
@@ -50,7 +50,7 @@ export const dummyProduct: Product = {
 				},
 			},
 			{
-				cursor: 456,
+				cursor: '456',
 				node: {
 					id: 'cde',
 					availableForSale: true,
