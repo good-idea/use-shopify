@@ -5,18 +5,18 @@ import { dummyProduct } from './stubs'
 describe('useProductVariant', () => {
 	it('should provide the first variant by default', () => {
 		const { result } = renderHook(() => useProductVariant(dummyProduct))
-		expect(result.current.currentVariant).toEqual(dummyProduct.variants.edges[0].node)
+		expect(result.current.currentVariant).toMatchObject(dummyProduct.variants.edges[0].node)
 	})
 
 	it('should provide the first variant by default', () => {
 		const { result } = renderHook(() => useProductVariant(dummyProduct, { initialVariant: 'last' }))
-		expect(result.current.currentVariant).toEqual(dummyProduct.variants.edges[2].node)
+		expect(result.current.currentVariant).toMatchObject(dummyProduct.variants.edges[2].node)
 	})
 
 	it('should find the initialVariant by id', () => {
 		const variant2 = dummyProduct.variants.edges[1].node
 		const { result } = renderHook(() => useProductVariant(dummyProduct, { initialVariant: variant2.id }))
-		expect(result.current.currentVariant).toEqual(variant2)
+		expect(result.current.currentVariant).toMatchObject(variant2)
 	})
 
 	it('should throw if the initialVariant does not exist', () => {
@@ -28,12 +28,12 @@ describe('useProductVariant', () => {
 		const variant1 = dummyProduct.variants.edges[0].node
 		const variant2 = dummyProduct.variants.edges[1].node
 		const { result } = renderHook(() => useProductVariant(dummyProduct))
-		expect(result.current.currentVariant).toEqual(variant1)
+		expect(result.current.currentVariant).toMatchObject(variant1)
 
 		act(() => {
 			result.current.selectVariant(variant2.id)
 		})
-		expect(result.current.currentVariant).toEqual(variant2)
+		expect(result.current.currentVariant).toMatchObject(variant2)
 	})
 
 	it('should throw if the product has no variants', () => {
