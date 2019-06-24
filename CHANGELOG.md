@@ -1,3 +1,10 @@
+## [0.3.2](https://github.com/good-idea/use-shopify/compare/v0.3.1...v0.3.2) (2019-06-06)
+
+
+### Bug Fixes
+
+* **app:** update types to use MoneyV2 ([62402dc](https://github.com/good-idea/use-shopify/commit/62402dc))
+
 ## [0.3.1](https://github.com/good-idea/use-shopify/compare/v0.3.0...v0.3.1) (2019-05-24)
 
 

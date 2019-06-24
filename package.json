@@ -1,6 +1,6 @@
 {
   "name": "use-shopify",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "React hooks to work with Shopify's Storefront API",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
