@@ -126,7 +126,6 @@ export const useCheckout = ({
 	useEffect(() => {
 		const fetchInitialCheckout = async () => {
 			const checkoutToken = getViewerCartCookie()
-			console.log(checkoutToken)
 			if (checkoutToken) {
 				const variables = { id: checkoutToken }
 				const result = await fetchCheckout(variables)
