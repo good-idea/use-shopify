@@ -1,3 +1,11 @@
+## [0.3.4](https://github.com/good-idea/use-shopify/compare/v0.3.3...v0.3.4) (2019-06-24)
+
+
+### Bug Fixes
+
+* **use-shopify:** skip checkout query with no id ([d867ca9](https://github.com/good-idea/use-shopify/commit/d867ca9))
+* **use-shopify:** skip checkout query with no id ([0878abf](https://github.com/good-idea/use-shopify/commit/0878abf))
+
 ## [0.3.3](https://github.com/good-idea/use-shopify/compare/v0.3.2...v0.3.3) (2019-06-20)
 
 
