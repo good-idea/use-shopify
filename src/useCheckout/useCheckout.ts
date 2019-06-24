@@ -126,10 +126,15 @@ export const useCheckout = ({
 	useEffect(() => {
 		const fetchInitialCheckout = async () => {
 			const checkoutToken = getViewerCartCookie()
-			const variables = { id: checkoutToken }
-			const result = await fetchCheckout(variables)
-			const checkout = result.data ? result.data.node : undefined
-			dispatch({ type: FINISHED_REQUEST, checkout })
+			console.log(checkoutToken)
+			if (checkoutToken) {
+				const variables = { id: checkoutToken }
+				const result = await fetchCheckout(variables)
+				const checkout = result.data ? result.data.node : undefined
+				dispatch({ type: FINISHED_REQUEST, checkout })
+			} else {
+				dispatch({ type: FINISHED_REQUEST, checkout: undefined })
+			}
 		}
 		fetchInitialCheckout()
 	}, [])
