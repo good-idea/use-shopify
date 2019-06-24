@@ -1,3 +1,10 @@
+## [0.3.5](https://github.com/good-idea/use-shopify/compare/v0.3.4...v0.3.5) (2019-06-24)
+
+
+### Bug Fixes
+
+* **use-shopify:** use @good-idea/unwind-edges ([9f8b2f1](https://github.com/good-idea/use-shopify/commit/9f8b2f1))
+
 ## [0.3.4](https://github.com/good-idea/use-shopify/compare/v0.3.3...v0.3.4) (2019-06-24)
 
 
