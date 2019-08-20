@@ -1,8 +1,10 @@
 node_modules
 build
+lib
 test
 src/**.js
 .idea/*
+.rpt2_cache
 
 coverage
 .nyc_output
