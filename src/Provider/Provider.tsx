@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { useCheckout, UseCheckoutQueries } from '../useCheckout'
+import { useCheckout, UseCheckoutValues, UseCheckoutQueries } from '../useCheckout'
 
 interface ShopifyContextValue {
-	checkout: any
+	checkout: UseCheckoutValues
 }
 
 export const ShopifyContext = React.createContext<ShopifyContextValue | undefined>(undefined)
