@@ -104,13 +104,13 @@ describe('useCheckout', () => {
 		})
 		await wait()
 		act(() => {
-			result.current.updateQuantity('123', 100)
+			result.current.updateQuantity({ id: '123', quantity: 100 })
 		})
 		await wait()
 		expect(queries.checkoutLineItemsUpdate).toHaveBeenCalledTimes(1)
 		expect(queries.checkoutLineItemsUpdate).toHaveBeenCalledWith({
 			checkoutId: 'foo',
-			lineItems: [{ quantity: 100, variantId: '123' }],
+			lineItems: [{ quantity: 100, id: '123' }],
 		})
 	})
 
