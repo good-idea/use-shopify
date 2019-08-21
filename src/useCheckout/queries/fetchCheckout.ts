@@ -1,5 +1,5 @@
 import { Checkout } from '../../types'
-import { checkoutFields } from '../fragments'
+import { checkoutFields } from '../../graphql/fragments'
 
 export type FetchCheckout = (
 	input: FetchCheckoutInput,

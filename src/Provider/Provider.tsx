@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { useCheckout, UseCheckoutValues, UseCheckoutQueries } from '../useCheckout'
+import { useSearch, UseSearchValues } from '../useSearch'
 
 interface ShopifyContextValue {
 	checkout: UseCheckoutValues
@@ -22,8 +23,10 @@ interface Props {
 
 export const ShopifyProvider = ({ children, queries }: Props) => {
 	const checkout = useCheckout(queries)
+	const search = useSearch(queries)
 	const value = {
 		checkout,
+		search,
 	}
 
 	return <ShopifyContext.Provider value={value}>{children}</ShopifyContext.Provider>

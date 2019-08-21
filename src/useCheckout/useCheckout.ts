@@ -12,7 +12,7 @@ import {
 	CheckoutDiscountCodeApply,
 	CheckoutDiscountCodeRemove,
 	UserError,
-} from '../graphql/queries'
+} from './queries'
 import { VIEWER_CART_TOKEN, setCookie, getCookie } from '../utils/storage'
 
 const { useReducer, useEffect } = React
