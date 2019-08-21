@@ -14,10 +14,12 @@ export type CheckoutLineItemsUpdateResponse = CheckoutResponse<'checkoutLineItem
 
 export const UPDATE_ITEM_MUTATION = /* GraphQL */ `
 	mutation CheckoutLineItemsUpdate(
-		$checkoutId: ID!
+		$checkoutId: ID!,
+    $lineItems: [CheckoutLineItemUpdateInput!]!
 	) {
 		checkoutLineItemsUpdate(
       checkoutId: $checkoutId
+      lineItems: $lineItems
 		) {
 			checkoutUserErrors {
 				code

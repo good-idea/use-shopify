@@ -1,3 +1,4 @@
+import { Paginated } from '@good-idea/unwind-edges'
 import { MailingAddress } from './customer'
 import { Variant } from './product'
 import { MoneyV2, CurrencyCode } from './money'
@@ -81,7 +82,7 @@ export interface Checkout {
 	discountApplications?: DiscountApplication[]
 	email?: string
 	id: string
-	lineItems: CheckoutLineItem[]
+	lineItems: Paginated<CheckoutLineItem>
 	note?: string
 	order?: Order
 	orderStatusUrl?: string | null

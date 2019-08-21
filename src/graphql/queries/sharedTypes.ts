@@ -18,9 +18,10 @@ export interface AttributeInput {
 }
 
 export interface CheckoutLineItemInput {
-	customAttributes?: AttributeInput[]
+	id?: string
+	variantId?: string
 	quantity: number
-	variantId: string
+	customAttributes?: AttributeInput[]
 }
 
 export interface UserError {
