@@ -1,3 +1,10 @@
+## [0.3.6](https://github.com/good-idea/use-shopify/compare/v0.3.5...v0.3.6) (2019-08-20)
+
+
+### Bug Fixes
+
+* **use-shopify:** fix exported TS types ([2df88b3](https://github.com/good-idea/use-shopify/commit/2df88b3))
+
 ## [0.3.5](https://github.com/good-idea/use-shopify/compare/v0.3.4...v0.3.5) (2019-06-24)
 
 
