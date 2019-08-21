@@ -1,6 +1,6 @@
 {
   "name": "use-shopify",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "React hooks to work with Shopify's Storefront API",
   "repository": "https://github.com/good-idea/use-shopify",
   "main": "lib/index.js",
