@@ -88,7 +88,7 @@ type AddToCheckoutInput = Omit<CheckoutLineItemsAddInput, 'checkoutId'>
 export interface UseCheckoutValues extends CheckoutState {
 	addToCheckout: (args: AddToCheckoutInput) => Promise<void>
 	addItemToCheckout: (args: CheckoutLineItemInput) => Promise<void>
-	updateQuantity: (variantId: string, quantity: number) => Promise<void>
+	updateQuantity: (args: CheckoutLineItemInput) => Promise<void>
 	applyDiscount: (code: string) => Promise<void>
 	removeDiscount: () => Promise<void>
 }
@@ -156,14 +156,15 @@ export const useCheckout = ({
 
 	const addItemToCheckout = async (lineItem: CheckoutLineItemInput) => addToCheckout({ lineItems: [lineItem] })
 
-	const updateQuantity = async (variantId: string, quantity: number) => {
+	const updateQuantity = async ({ id, variantId, quantity }: CheckoutLineItemInput) => {
 		const { checkout } = await getOrCreateCheckout()
 		if (!checkout) throw new Error('There is no checkout to update')
 		dispatch({ type: STARTED_REQUEST })
 		const result = await checkoutLineItemsUpdate({
 			checkoutId: checkout.id,
-			lineItems: [{ variantId, quantity }],
+			lineItems: [{ id, variantId, quantity }],
 		})
+
 		dispatch({
 			type: FINISHED_REQUEST,
 			...result.data.checkoutLineItemsUpdate,
