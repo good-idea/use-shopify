@@ -2,6 +2,7 @@ import * as React from 'react'
 import { memoize } from 'lodash'
 import { Paginated } from '@good-idea/unwind-edges'
 import { DocumentNode } from 'graphql'
+import { debounce } from '../utils'
 import { Product, Collection, QueryFunction } from '../types'
 import {
   defaultQueries,
@@ -88,33 +89,6 @@ const getSearchVariables = (
     // collectionAfter: collectionCursor,
   }
 }
-//
-// const executeQuery = <ExpectedResult>(
-//   queryFn: QueryFunction,
-//   queryString: string | DocumentNode,
-// ) => async (
-//   searchTerm: string,
-//   searchState: SearchState,
-// ): Promise<ExpectedResult> => {
-//   const variables = getSearchVariables(searchTerm, searchState)
-//
-//   const response = await queryFn<ExpectedResult, SearchQueryInput>(
-//     queryString,
-//     variables as SearchQueryInput,
-//   )
-//
-//   return response
-// }
-function debounce<T extends Function>(fn: T, delay) {
-  let timer = null
-  return function(...args: any) {
-    const context = this
-    clearTimeout(timer)
-    timer = setTimeout(function() {
-      fn.apply(context, args)
-    }, delay)
-  }
-}
 
 const memoizeQueryFunction = (fn: QueryFunction) =>
   memoize(fn, (...args) => JSON.stringify(args))
@@ -151,15 +125,16 @@ export const useSearch = <ExpectedResult extends SearchQueryResult>({
   }
   const [state, dispatch] = useReducer(reducer, getInitialState(config))
 
-  /* Memoize the query function */
+  /* Memoize the query function, and
+   * debounce the Search function
+   * Use React's useMemo so we only create these once */
   const query = state.config.memoize
     ? useMemo(() => memoizeQueryFunction(userQueryFunction), [
         userQueryFunction,
       ])
     : userQueryFunction
 
-  /* Debounce the Search function */
-  const _runSearch = async (variables: SearchQueryInput) => {
+  const runSearchFn = async (variables: SearchQueryInput) => {
     const response = await query<ExpectedResult, SearchQueryInput>(
       SEARCH_QUERY,
       variables,
@@ -170,8 +145,11 @@ export const useSearch = <ExpectedResult extends SearchQueryResult>({
 
   const runSearch =
     state.config.debounce && state.config.debounce > 0
-      ? useMemo(() => debounce(_runSearch, config.debounce), [config.debounce])
-      : _runSearch
+      ? useMemo(
+          () => debounce<typeof runSearchFn>(runSearchFn, config.debounce),
+          [config.debounce],
+        )
+      : runSearchFn
 
   const { SEARCH_QUERY } = {
     ...defaultQueries,

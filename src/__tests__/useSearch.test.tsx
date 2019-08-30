@@ -100,7 +100,6 @@ describe('useSearch', () => {
       search('diamond ring')
     })
 
-    console.log(result.current)
     expect(result.current.loading).toBe(true)
     await wait() // Wait for the query result to finish
     expect(result.current.loading).toBe(false)
