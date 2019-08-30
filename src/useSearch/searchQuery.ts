@@ -10,8 +10,8 @@ export type SearchQuery = (
 }>
 
 export interface SearchQueryResult {
-  products: Paginated<Product>
-  collections: Paginated<Collection>
+  products: Paginated<Product> | null
+  collections: Paginated<Collection> | null
 }
 
 export interface SearchQueryInput {
@@ -29,6 +29,8 @@ export interface SearchQueryInput {
   collectionBefore?: string
   collectionReverse?: boolean
 }
+
+// TODO: Break this into two queries
 
 export const SEARCH_QUERY = gql`
   query SearchQuery(

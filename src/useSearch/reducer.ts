@@ -1,4 +1,4 @@
-// import { unwindEdges } from '@good-idea/unwind-edges'
+import { unwindEdges } from '@good-idea/unwind-edges'
 import { SearchState } from './useSearch'
 // import { tail } from '../utils/fp'
 import { SearchQueryResult } from './searchQuery'
@@ -27,6 +27,9 @@ export const reducer = (state: SearchState, action: Action): SearchState => {
     case NEW_SEARCH:
       return {
         ...state,
+        results: [],
+        products: [],
+        collections: [],
         loading: true,
       }
     case FETCH_MORE:
@@ -35,9 +38,18 @@ export const reducer = (state: SearchState, action: Action): SearchState => {
         loading: true,
       }
     case FETCHED_RESULTS:
+      const { results } = action
+      const products = results.products
+        ? unwindEdges(action.results.products)[0]
+        : []
+      const collections = results.collections
+        ? unwindEdges(action.results.collections)[0]
+        : []
       return {
         ...state,
-        results: action.results,
+        products: [...state.products, ...products],
+        collections: [...state.collections, ...collections],
+        results: [...state.results, action.results],
         loading: false,
       }
     default:

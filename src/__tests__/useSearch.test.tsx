@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks'
-import { wait, act } from '@testing-library/react'
+import { wait as rtlWait, act } from '@testing-library/react'
 import { useSearch } from '../useSearch'
 import { SEARCH_QUERY as defaultSearchQuery } from '../useSearch/searchQuery'
 
@@ -12,20 +12,44 @@ afterAll(() => {
   if (console.error.mockRestore) console.error.mockRestore()
 })
 
+jest.useFakeTimers()
+
+const wait = async () => {
+  jest.runAllTimers()
+  await rtlWait()
+}
+
 const dummyResult = {
   products: {
     pageInfo: {
       hasNextPage: false,
       hasPreviousPage: false,
     },
-    edges: [{ title: 'diamond ring' }],
+    edges: [{ cursor: 'abc', node: { title: 'diamond ring' } }],
   },
   collections: {
     pageInfo: {
       hasNextPage: true,
       hasPreviousPage: false,
     },
-    edges: [{ title: 'diamond collection' }],
+    edges: [{ cursor: 'def', node: { title: 'diamond collection' } }],
+  },
+}
+
+const dummyResultTwo = {
+  products: {
+    pageInfo: {
+      hasNextPage: false,
+      hasPreviousPage: false,
+    },
+    edges: [{ cursor: '123', node: { title: 'diamond ring 2' } }],
+  },
+  collections: {
+    pageInfo: {
+      hasNextPage: true,
+      hasPreviousPage: false,
+    },
+    edges: [{ cursor: '234', node: { title: 'diamond collection 2' } }],
   },
 }
 
@@ -57,8 +81,17 @@ describe('useSearch', () => {
     expect(query.mock.calls[0][0]).toBe(customQueries.SEARCH_QUERY)
   })
 
-  it('should assign search results to the state', async () => {
-    const query = jest.fn().mockResolvedValue({ data: dummyResult })
+  it('should store the results in the state', async () => {
+    /**
+     * All search results should be parsed into a simple list of products
+     * and collections,
+     * and each 'raw' paginated search result should be added to the
+     * 'results' array
+     */
+    const query = jest
+      .fn()
+      .mockResolvedValueOnce({ data: dummyResult })
+      .mockResolvedValueOnce({ data: dummyResultTwo })
     const { result } = renderHook(() => useSearch({ query }))
     const { search } = result.current
     expect(result.current.loading).toBe(false)
@@ -67,10 +100,20 @@ describe('useSearch', () => {
       search('diamond ring')
     })
 
+    console.log(result.current)
     expect(result.current.loading).toBe(true)
     await wait() // Wait for the query result to finish
     expect(result.current.loading).toBe(false)
-    expect(result.current.results).toEqual(dummyResult)
+    expect(result.current.products[0].title).toBe(
+      dummyResult.products.edges[0].node.title,
+    )
+
+    expect(result.current.collections[0].title).toBe(
+      dummyResult.collections.edges[0].node.title,
+    )
+    expect(result.current.results[0]).toEqual(dummyResult)
+
+    //TODO: Test loadMore here
   })
 
   it('should memoize search term results', async () => {
@@ -107,6 +150,129 @@ describe('useSearch', () => {
     })
     await wait()
     expect(query.mock.calls.length).toBe(2)
+  })
+
+  it('should not memoize search term results when config.memoize is false', async () => {
+    const query = jest.fn().mockResolvedValue({ data: ':)' })
+    const config = {
+      memoize: false,
+    }
+    const { result } = renderHook(() => useSearch({ query, config }))
+    const { search } = result.current
+
+    act(() => {
+      search('diamond ring')
+    })
+    await wait()
+    expect(query.mock.calls.length).toBe(1)
+
+    act(() => {
+      search('diamond ring')
+    })
+    await wait()
+    expect(query.mock.calls.length).toBe(2)
+
+    act(() => {
+      search('gold ring')
+    })
+    await wait()
+    expect(query.mock.calls.length).toBe(3)
+
+    act(() => {
+      search('gold ring')
+    })
+    await wait()
+    expect(query.mock.calls.length).toBe(4)
+
+    act(() => {
+      search('diamond ring')
+    })
+    await wait()
+    expect(query.mock.calls.length).toBe(5)
+  })
+
+  it('should debounce calls to `search`', async () => {
+    const query = jest.fn().mockResolvedValue({ data: ':)' })
+    const { result } = renderHook(() => useSearch({ query }))
+    const { search } = result.current
+
+    expect(result.current.loading).toBe(false)
+    act(() => search('d'))
+    expect(result.current.loading).toBe(true)
+    jest.advanceTimersByTime(20)
+    act(() => search('di'))
+    jest.advanceTimersByTime(20)
+    act(() => search('dia'))
+    jest.advanceTimersByTime(20)
+    act(() => search('diam'))
+    jest.advanceTimersByTime(20)
+    act(() => search('diamo'))
+    jest.advanceTimersByTime(20)
+    act(() => search('diamon'))
+    jest.advanceTimersByTime(20)
+    act(() => search('diamond'))
+    jest.advanceTimersByTime(20)
+    expect(query.mock.calls.length).toBe(0)
+    jest.advanceTimersByTime(1000)
+    expect(query.mock.calls.length).toBe(1)
+  })
+
+  it('should debounce by the time assigned to config.debounce', async () => {
+    const query = jest.fn().mockResolvedValue({ data: ':)' })
+    const config = {
+      debounce: 30,
+    }
+    const { result } = renderHook(() => useSearch({ query, config }))
+    const { search } = result.current
+
+    expect(result.current.loading).toBe(false)
+    act(() => search('d'))
+    expect(result.current.loading).toBe(true)
+    jest.advanceTimersByTime(20)
+    act(() => search('di'))
+    jest.advanceTimersByTime(20)
+    act(() => search('dia'))
+    jest.advanceTimersByTime(40) // should fire once here
+    act(() => search('diam'))
+    jest.advanceTimersByTime(20)
+    act(() => search('diamo'))
+    jest.advanceTimersByTime(20)
+    act(() => search('diamon'))
+    jest.advanceTimersByTime(20)
+    act(() => search('diamond'))
+    jest.advanceTimersByTime(40) // and again here
+    expect(query.mock.calls.length).toBe(2)
+    jest.advanceTimersByTime(1000)
+    expect(query.mock.calls.length).toBe(2)
+  })
+
+  it('should not debounce when config.debounce === 0', async () => {
+    const query = jest.fn().mockResolvedValue({ data: ':)' })
+    const config = {
+      debounce: 0,
+    }
+    const { result } = renderHook(() => useSearch({ query, config }))
+    const { search } = result.current
+
+    expect(result.current.loading).toBe(false)
+    act(() => search('d'))
+    expect(result.current.loading).toBe(true)
+    jest.advanceTimersByTime(20)
+    act(() => search('di'))
+    jest.advanceTimersByTime(20)
+    act(() => search('dia'))
+    jest.advanceTimersByTime(20) // should fire once here
+    act(() => search('diam'))
+    jest.advanceTimersByTime(20)
+    act(() => search('diamo'))
+    jest.advanceTimersByTime(20)
+    act(() => search('diamon'))
+    jest.advanceTimersByTime(20)
+    act(() => search('diamond'))
+    jest.advanceTimersByTime(20) // and again here
+    expect(query.mock.calls.length).toBe(7)
+    jest.advanceTimersByTime(1000)
+    expect(query.mock.calls.length).toBe(7)
   })
 
   it.skip('should only search products or collections when either are marked as `false` in the config', async () => {
