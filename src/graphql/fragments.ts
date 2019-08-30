@@ -61,22 +61,30 @@ export const productFragment = /* GraphQL */ `
       }
     }
     variants(first: 100) {
-      availableForSale
-      id
-      sku
-      title
-      weight
-      weightUnit
-      compareAtPriceV2 {
-        ...MoneyV2Fragment
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
       }
-      priceV2 {
-        ...MoneyV2Fragment
-      }
-      requiresShipping
-      selectedOptions {
-        name
-        value
+      edges {
+        node {
+          availableForSale
+          id
+          sku
+          title
+          weight
+          weightUnit
+          compareAtPriceV2 {
+            ...MoneyV2Fragment
+          }
+          priceV2 {
+            ...MoneyV2Fragment
+          }
+          requiresShipping
+          selectedOptions {
+            name
+            value
+          }
+        }
       }
     }
   }

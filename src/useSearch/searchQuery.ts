@@ -1,4 +1,5 @@
 import { Paginated } from '@good-idea/unwind-edges'
+import gql from 'graphql-tag'
 import { Product, Collection } from '../types'
 import { productFragment, collectionFragment } from '../graphql'
 
@@ -29,67 +30,67 @@ export interface SearchQueryInput {
   collectionReverse?: boolean
 }
 
-export const SEARCH_QUERY = /* GraphQL */ `
-query SearchQuery(
-  $productFirst: Int!,
-  $productAfter: String,
-  $productLast: Int,
-  $productBefore: Int,
-  $productReverse: Boolean,
-  $productSortKey: ProductSortKeys,
-  $productQuery: String!
-  $collectionFirst: Int!,
-  $collectionAfter: String,
-  $collectionLast: Int,
-  $collectionBefore: Int,
-  $collectionReverse: Boolean,
-  $collectionSortKey: ProductSortKeys,
-  $collectionQuery: String!
-) {
-  products (
-    first: $productFirst,
-    after: $productAfter,
-    last: $productLast,
-    before: $productBefore,
-    reverse: $productReverse,
-    sortKey: $productSortKey,
-    query: $productQuery
+export const SEARCH_QUERY = gql`
+  query SearchQuery(
+    $productFirst: Int!
+    $productAfter: String
+    $productLast: Int
+    $productBefore: String
+    $productReverse: Boolean
+    $productSortKey: ProductSortKeys
+    $productQuery: String!
+    $collectionFirst: Int!
+    $collectionAfter: String
+    $collectionLast: Int
+    $collectionBefore: String
+    $collectionReverse: Boolean
+    $collectionSortKey: CollectionSortKeys
+    $collectionQuery: String!
   ) {
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-    }
-    edges {
-      cursor
-      node {
-        ...ProductFragment
+    products(
+      first: $productFirst
+      after: $productAfter
+      last: $productLast
+      before: $productBefore
+      reverse: $productReverse
+      sortKey: $productSortKey
+      query: $productQuery
+    ) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        cursor
+        node {
+          ...ProductFragment
+        }
       }
     }
-  }
 
-  collections (
-    first: $collectionFirst,
-    after: $collectionAfter,
-    last: $collectionLast,
-    before: $collectionBefore,
-    reverse: $collectionReverse,
-    sortKey: $collectionSortKey,
-    query: $collectionQuery
-  ) {
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-    }
-    edges {
-      cursor
-      node {
-        ...CollectionFragment
+    collections(
+      first: $collectionFirst
+      after: $collectionAfter
+      last: $collectionLast
+      before: $collectionBefore
+      reverse: $collectionReverse
+      sortKey: $collectionSortKey
+      query: $collectionQuery
+    ) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        cursor
+        node {
+          ...CollectionFragment
+        }
       }
     }
   }
   ${productFragment}
   ${collectionFragment}
-}
 `
 
 export const defaultQueries = { SEARCH_QUERY }
