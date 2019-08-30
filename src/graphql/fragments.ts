@@ -1,88 +1,88 @@
 export const moneyV2Fragment = /* GraphQL */ `
-	fragment MoneyV2Fragment on MoneyV2 {
-		amount
-		currencyCode
-	}
+  fragment MoneyV2Fragment on MoneyV2 {
+    amount
+    currencyCode
+  }
 `
 export const imageFragment = /* GraphQL */ `
-	fragment ImageFragment on Image {
-		altText
-		id
-		originalSrc
-	}
+  fragment ImageFragment on Image {
+    altText
+    id
+    originalSrc
+  }
 `
 
 export const collectionFragment = /* GraphQL */ `
-	fragment CollectionFragment on Collection {
-		description
-		descriptionHtml
-		handle
-		id
-		image {
-			...ImageFragment
-		}
-		title
-		updatedAt
-	}
-	${imageFragment}
+  fragment CollectionFragment on Collection {
+    description
+    descriptionHtml
+    handle
+    id
+    image {
+      ...ImageFragment
+    }
+    title
+    updatedAt
+  }
+  ${imageFragment}
 `
 
 export const productFragment = /* GraphQL */ `
-	fragment ProductFragment on Product {
-		availableForSale
-		createdAt
-		description
-		descriptionHtml
-		handle
-		id
-		productType
-		publishedAt
-		tags
-		title
-		vendor
-		images(first: 100) {
-			edges {
-				node {
-					...ImageFragment
-				}
-			}
-		}
-		options(first: 100) {
-			id
-			name
-			values
-		}
-		priceRange {
-			maxVariantPrice {
-				...MoneyV2Fragment
-			}
-			minVariantPrice {
-				...MoneyV2Fragment
-			}
-		}
-		variants(first: 100) {
-			availableForSale
-			id
-			sku
-			title
-			weight
-			weightUnit
-			compareAtPriceV2 {
-				...MoneyV2Fragment
-			}
-			priceV2 {
-				...MoneyV2Fragment
-			}
-			requiresShipping
-			selectedOptions {
-				name
-				value
-			}
-		}
-	}
+  fragment ProductFragment on Product {
+    availableForSale
+    createdAt
+    description
+    descriptionHtml
+    handle
+    id
+    productType
+    publishedAt
+    tags
+    title
+    vendor
+    images(first: 100) {
+      edges {
+        node {
+          ...ImageFragment
+        }
+      }
+    }
+    options(first: 100) {
+      id
+      name
+      values
+    }
+    priceRange {
+      maxVariantPrice {
+        ...MoneyV2Fragment
+      }
+      minVariantPrice {
+        ...MoneyV2Fragment
+      }
+    }
+    variants(first: 100) {
+      availableForSale
+      id
+      sku
+      title
+      weight
+      weightUnit
+      compareAtPriceV2 {
+        ...MoneyV2Fragment
+      }
+      priceV2 {
+        ...MoneyV2Fragment
+      }
+      requiresShipping
+      selectedOptions {
+        name
+        value
+      }
+    }
+  }
 
-	${imageFragment}
-	${moneyV2Fragment}
+  ${imageFragment}
+  ${moneyV2Fragment}
 `
 
 const discountApplicationFields = /* GraphQL */ `

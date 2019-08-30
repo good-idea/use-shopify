@@ -4,36 +4,36 @@ import { ShopifyImage } from './media'
 import { MoneyV2 } from './money'
 
 interface SelectedOption {
-	name: string
-	value: string
+  name: string
+  value: string
 }
 
 export interface Variant {
-	id: string
-	availableForSale: boolean
-	image: ShopifyImage
-	price: string
-	title: string
-	selectedOptions?: SelectedOption[]
-	weight?: number
-	weightUnit?: string
+  id: string
+  availableForSale: boolean
+  image: ShopifyImage
+  price: string
+  title: string
+  selectedOptions?: SelectedOption[]
+  weight?: number
+  weightUnit?: string
 }
 
 interface ProductPriceRange {
-	minVariantPrice: MoneyV2
-	maxVariantPrice: MoneyV2
+  minVariantPrice: MoneyV2
+  maxVariantPrice: MoneyV2
 }
 
 export interface Product {
-	id: string
-	handle: string
-	title: string
-	description: string
-	productType?: string
-	priceRange?: ProductPriceRange
-	availableForSale?: boolean
-	collections?: Paginated<Collection>
-	images: Paginated<ShopifyImage>
-	variants: Paginated<Variant>
-	__typename: 'Product'
+  id: string
+  handle: string
+  title: string
+  description: string
+  productType?: string
+  priceRange?: ProductPriceRange
+  availableForSale?: boolean
+  collections?: Paginated<Collection>
+  images: Paginated<ShopifyImage>
+  variants: Paginated<Variant>
+  __typename: 'Product'
 }

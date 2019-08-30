@@ -12,53 +12,56 @@ export const RECEIVED_ERRORS = 'RECEIVED_ERRORS'
 export const CART_CLEARED = 'RECEIVED_ERRORS'
 
 interface StartedAction {
-	type: typeof STARTED_REQUEST
+  type: typeof STARTED_REQUEST
 }
 
 interface GenericAction {
-	type:
-		| typeof FETCHED_CHECKOUT
-		| typeof CREATED_CHECKOUT
-		| typeof APPLIED_DISCOUNT
-		| typeof REMOVED_DISCOUNT
-		| typeof ADDED_LINE_ITEMS
-		| typeof UPDATED_LINE_ITEMS
-		| typeof RECEIVED_ERRORS
-		| typeof CART_CLEARED
-	checkout?: Checkout
-	checkoutUserErrors?: UserError[]
+  type:
+    | typeof FETCHED_CHECKOUT
+    | typeof CREATED_CHECKOUT
+    | typeof APPLIED_DISCOUNT
+    | typeof REMOVED_DISCOUNT
+    | typeof ADDED_LINE_ITEMS
+    | typeof UPDATED_LINE_ITEMS
+    | typeof RECEIVED_ERRORS
+    | typeof CART_CLEARED
+  checkout?: Checkout
+  checkoutUserErrors?: UserError[]
 }
 
 type Action = StartedAction | GenericAction
 
-export const reducer = (state: CheckoutState, action: Action): CheckoutState => {
-	switch (action.type) {
-		case STARTED_REQUEST:
-			return { ...state, loading: true }
-		case CART_CLEARED:
-			return {
-				...state,
-				checkout: undefined,
-				checkoutUserErrors: undefined,
-				loading: false,
-				ready: true,
-			}
-		case FETCHED_CHECKOUT:
-		case CREATED_CHECKOUT:
-		case APPLIED_DISCOUNT:
-		case REMOVED_DISCOUNT:
-		case ADDED_LINE_ITEMS:
-		case UPDATED_LINE_ITEMS:
-		case RECEIVED_ERRORS:
-			const { checkoutUserErrors, checkout } = action
-			return {
-				...state,
-				checkoutUserErrors: checkoutUserErrors || [],
-				checkout,
-				loading: false,
-				ready: true,
-			}
-		default:
-			return state
-	}
+export const reducer = (
+  state: CheckoutState,
+  action: Action,
+): CheckoutState => {
+  switch (action.type) {
+    case STARTED_REQUEST:
+      return { ...state, loading: true }
+    case CART_CLEARED:
+      return {
+        ...state,
+        checkout: undefined,
+        checkoutUserErrors: undefined,
+        loading: false,
+        ready: true,
+      }
+    case FETCHED_CHECKOUT:
+    case CREATED_CHECKOUT:
+    case APPLIED_DISCOUNT:
+    case REMOVED_DISCOUNT:
+    case ADDED_LINE_ITEMS:
+    case UPDATED_LINE_ITEMS:
+    case RECEIVED_ERRORS:
+      const { checkoutUserErrors, checkout } = action
+      return {
+        ...state,
+        checkoutUserErrors: checkoutUserErrors || [],
+        checkout,
+        loading: false,
+        ready: true,
+      }
+    default:
+      return state
+  }
 }
