@@ -1,3 +1,11 @@
+## [0.3.7](https://github.com/good-idea/use-shopify/compare/v0.3.6...v0.3.7) (2019-08-21)
+
+
+### Bug Fixes
+
+* **use-shopify:** fix updateQuantity arguments ([3927d46](https://github.com/good-idea/use-shopify/commit/3927d46))
+* **use-shopify:** fix updateQuantity tests ([38c993f](https://github.com/good-idea/use-shopify/commit/38c993f))
+
 ## [0.3.6](https://github.com/good-idea/use-shopify/compare/v0.3.5...v0.3.6) (2019-08-20)
 
 

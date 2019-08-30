@@ -1,14 +1,14 @@
 interface Edge<T> {
-	cursor: string | number
-	node: T
+  cursor: string | number
+  node: T
 }
 
 export interface PageInfo {
-	hasNextPage: boolean
-	hasPrevPage: boolean
+  hasNextPage: boolean
+  hasPrevPage: boolean
 }
 
 export interface Paginated<T> {
-	pageInfo: PageInfo
-	edges: Array<Edge<T>>
+  pageInfo: PageInfo
+  edges: Array<Edge<T>>
 }

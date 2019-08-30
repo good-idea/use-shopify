@@ -1,197 +1,316 @@
-import { act, renderHook } from 'react-hooks-testing-library'
-import { wait, cleanup } from '@testing-library/react'
+import { renderHook } from '@testing-library/react-hooks'
+import { wait, act } from '@testing-library/react'
 import { useCheckout } from '../useCheckout'
-import { dummyProduct } from './stubs'
+// import { dummyProduct } from './stubs'
+import * as defaultUseCheckoutQueries from '../useCheckout/queries'
 
 jest.useFakeTimers()
 
-const dummyVariant = dummyProduct.variants.edges[0].node
-const dummyLineItemAdd = { variantId: dummyVariant.id, quantity: 1 }
+const dummyLineItemAdd = { id: 'checkoutIdxyz', quantity: 1 }
 
-const dummyCheckout = {
-	id: 'foo',
+const defaultDummyCheckoutResponse = {
+  checkout: {
+    id: 'foo',
+  },
+  checkoutUserErrors: [],
 }
 
-const dummyResponse = (key: string) => ({
-	data: {
-		[key]: {
-			checkout: dummyCheckout,
-		},
-	},
+const dummyResponse = (key: string, response: any = {}) => ({
+  data: {
+    [key]: {
+      ...defaultDummyCheckoutResponse,
+      ...response,
+    },
+  },
 })
 
-const createMockQueries = (withExistingCheckout: boolean = true) => ({
-	fetchCheckout: jest.fn().mockResolvedValue({
-		data: withExistingCheckout
-			? {
-					node: dummyCheckout,
-			  }
-			: undefined,
-	}),
-	checkoutCreate: jest.fn().mockResolvedValue(dummyResponse('checkoutCreate')),
-	checkoutLineItemsAdd: jest.fn().mockImplementation(async ({ lineItems }) => ({
-		data: {
-			checkoutLineItemsAdd: {
-				checkout: {
-					...dummyCheckout,
-					lineItems,
-				},
-			},
-		},
-	})),
-	checkoutLineItemsUpdate: jest.fn().mockResolvedValue(dummyResponse('checkoutLineItemsUpdate')),
-	checkoutDiscountCodeApply: jest.fn().mockResolvedValue(dummyResponse('checkoutDiscountCodeApplyV2')),
-	checkoutDiscountCodeRemove: jest.fn().mockResolvedValue(dummyResponse('checkoutDiscountCodeRemove')),
+const queries = defaultUseCheckoutQueries
+
+beforeAll(() => {
+  console.error = jest.fn()
 })
+
+afterAll(() => {
+  // @ts-ignore
+  console.error.mockRestore()
+})
+/**
+ * Most of these tests are simply making sure that the reducer is applying
+ * an updated `checkout` after running the query.
+ */
 
 describe('useCheckout', () => {
-	afterEach(() => {
-		cleanup()
-	})
+  it('[checkoutLineItemsAdd] should create a new checkout if none exists', async () => {
+    const query = jest
+      .fn()
+      .mockResolvedValueOnce(dummyResponse('checkoutCreate'))
+      .mockResolvedValueOnce(
+        dummyResponse('checkoutLineItemsAdd', { checkout: { id: 'added' } }),
+      )
+    const { result } = renderHook(() => useCheckout({ query, queries }))
+    const { checkout, checkoutLineItemsAdd } = result.current
 
-	it('[addToCheckout] should create a new checkout if none exists', async () => {
-		const queries = createMockQueries(false)
-		const { result } = renderHook(() => useCheckout(queries))
-		const { checkout, addToCheckout } = result.current
+    await wait()
+    expect(checkout).toBe(undefined)
+    act(() => {
+      checkoutLineItemsAdd([dummyLineItemAdd])
+    })
 
-		await wait()
-		expect(checkout).toBe(undefined)
-		act(() => {
-			addToCheckout({ lineItems: [dummyLineItemAdd] })
-		})
+    await wait()
+    expect(result.current.checkout).toBeTruthy()
+    if (!result.current.checkout) throw new Error('checkout was not created')
+    expect(query).toHaveBeenCalledTimes(2)
+    expect(result.current.checkout.id).toBe('added')
+  })
 
-		await wait()
-		if (!result.current.checkout) throw new Error('checkout was not created')
-		expect(queries.checkoutCreate).toHaveBeenCalledTimes(1)
-		expect(result.current.checkout.id).toBe('foo')
-	})
+  it('[checkoutLineItemsUpdate] should apply a new checkout to the state', async () => {
+    const updatedLineItem = {
+      ...dummyLineItemAdd,
+      quantity: 2,
+    }
+    const query = jest
+      .fn()
+      .mockResolvedValueOnce(dummyResponse('checkoutCreate'))
+      .mockResolvedValueOnce(
+        dummyResponse('checkoutLineItemsAdd', {
+          checkout: { lineItems: [dummyLineItemAdd] },
+        }),
+      )
+      .mockResolvedValueOnce(
+        dummyResponse('checkoutLineItemsUpdate', {
+          checkout: { lineItems: [updatedLineItem] },
+        }),
+      )
+    const { result } = renderHook(() => useCheckout({ query, queries }))
 
-	it('[addToCheckout] should add new items to the current checkout', async () => {
-		const queries = createMockQueries()
-		const { result } = renderHook(() => useCheckout(queries))
-		await wait()
+    act(() => {
+      result.current.checkoutLineItemsAdd([dummyLineItemAdd])
+    })
+    await wait()
+    act(() => {
+      result.current.checkoutLineItemsUpdate([dummyLineItemAdd])
+    })
 
-		act(() => {
-			result.current.addToCheckout({ lineItems: [dummyLineItemAdd] })
-		})
-		await wait()
-		expect(queries.checkoutCreate).toHaveBeenCalledTimes(0)
-		expect(queries.checkoutLineItemsAdd).toHaveBeenCalledTimes(1)
-		act(() => {
-			result.current.addToCheckout({ lineItems: [dummyLineItemAdd] })
-		})
-		await wait()
-		expect(queries.checkoutLineItemsAdd).toHaveBeenCalledTimes(2)
-	})
+    await wait()
+    if (!result.current.checkout) throw new Error('checkout was not created')
 
-	it('[addItemToCheckout] should add a single item to the current checkout', async () => {
-		const queries = createMockQueries()
-		const { result } = renderHook(() => useCheckout(queries))
-		await wait()
-		act(() => {
-			result.current.addItemToCheckout({ ...dummyLineItemAdd, quantity: 3 })
-		})
-		await wait()
-		expect(queries.checkoutLineItemsAdd).toHaveBeenCalledTimes(1)
-	})
+    expect(query).toHaveBeenCalledTimes(3)
+    expect(result.current.checkout.lineItems[0].quantity).toBe(2)
+  })
 
-	it('[updateQuantity] should update the quantity of a given variant', async () => {
-		const queries = createMockQueries()
-		const { result } = renderHook(() => useCheckout(queries))
-		await wait()
-		act(() => {
-			result.current.addToCheckout({ lineItems: [dummyLineItemAdd] })
-		})
-		await wait()
-		act(() => {
-			result.current.updateQuantity({ id: '123', quantity: 100 })
-		})
-		await wait()
-		expect(queries.checkoutLineItemsUpdate).toHaveBeenCalledTimes(1)
-		expect(queries.checkoutLineItemsUpdate).toHaveBeenCalledWith({
-			checkoutId: 'foo',
-			lineItems: [{ quantity: 100, id: '123' }],
-		})
-	})
+  it('[checkoutDiscountCodeApply] should apply a new checkout to the state', async () => {
+    const query = jest
+      .fn()
+      .mockResolvedValueOnce(dummyResponse('checkoutCreate'))
+      .mockResolvedValueOnce(dummyResponse('checkoutLineItemsAdd'))
+      .mockResolvedValueOnce(
+        dummyResponse('checkoutDiscountCodeApplyV2', {
+          checkout: { id: 'applied' },
+        }),
+      )
+    const { result } = renderHook(() => useCheckout({ query, queries }))
 
-	it('[applyDiscount] should create a checkout if none exists', async () => {
-		const queries = createMockQueries(false)
-		const { result } = renderHook(() => useCheckout(queries))
-		await wait()
-		act(() => {
-			result.current.applyDiscount('specialDiscount')
-		})
-		await wait()
-		await wait()
+    act(() => {
+      result.current.checkoutLineItemsAdd([dummyLineItemAdd])
+    })
+    await wait()
+    act(() => {
+      result.current.checkoutDiscountCodeApply('myCode')
+    })
 
-		if (!result.current.checkout) throw new Error('checkout was not created')
-		expect(queries.checkoutCreate).toHaveBeenCalledTimes(1)
-		expect(queries.checkoutDiscountCodeApply).toHaveBeenCalledTimes(1)
-		expect(queries.checkoutDiscountCodeApply).toHaveBeenCalledWith({
-			checkoutId: 'foo',
-			discountCode: 'specialDiscount',
-		})
-		expect(result.current.checkout.id).toBe('foo')
-	})
+    await wait()
+    if (!result.current.checkout) throw new Error('checkout was not created')
+    expect(query).toHaveBeenCalledTimes(3)
+    expect(result.current.checkout.id).toBe('applied')
+  })
 
-	it('[applyDiscount] should create a checkout if none exists', async () => {
-		const queries = createMockQueries()
-		const { result } = renderHook(() => useCheckout(queries))
-		await wait()
-		act(() => {
-			result.current.applyDiscount('specialDiscount')
-		})
-		await wait()
-		await wait()
+  it('[checkoutDiscountCodeRemove] should apply a new checkout to the state', async () => {
+    const query = jest
+      .fn()
+      .mockResolvedValueOnce(dummyResponse('checkoutCreate'))
+      .mockResolvedValueOnce(dummyResponse('checkoutLineItemsAdd'))
+      .mockResolvedValueOnce(
+        dummyResponse('checkoutDiscountCodeRemove', {
+          checkout: { id: 'removed' },
+        }),
+      )
+    const { result } = renderHook(() => useCheckout({ query, queries }))
 
-		if (!result.current.checkout) throw new Error('checkout was not created')
-		expect(queries.checkoutCreate).toHaveBeenCalledTimes(0)
-		expect(queries.checkoutDiscountCodeApply).toHaveBeenCalledTimes(1)
-		expect(queries.checkoutDiscountCodeApply).toHaveBeenCalledWith({
-			checkoutId: 'foo',
-			discountCode: 'specialDiscount',
-		})
-		expect(result.current.checkout.id).toBe('foo')
-	})
+    act(() => {
+      result.current.checkoutLineItemsAdd([dummyLineItemAdd])
+    })
+    await wait()
+    act(() => {
+      result.current.checkoutDiscountCodeRemove()
+    })
 
-	it('[removeDiscount] should remove the current discount code', async () => {
-		const queries = createMockQueries()
-		const { result } = renderHook(() => useCheckout(queries))
-		act(() => {
-			result.current.addToCheckout({ lineItems: [dummyLineItemAdd] })
-		})
-		await wait()
-		act(() => {
-			result.current.applyDiscount('specialDiscount')
-		})
+    await wait()
 
-		await wait()
-		act(() => {
-			result.current.removeDiscount()
-		})
-		await wait()
+    if (!result.current.checkout) throw new Error('checkout was not created')
+    expect(query).toHaveBeenCalledTimes(3)
+    expect(result.current.checkout.id).toBe('removed')
+  })
 
-		if (!result.current.checkout) throw new Error('checkout was not created')
-		expect(queries.checkoutDiscountCodeRemove).toHaveBeenCalledWith({
-			checkoutId: 'foo',
-		})
-	})
+  it('[clearCart] should empty the cart', async () => {
+    const query = jest
+      .fn()
+      .mockResolvedValueOnce(dummyResponse('checkoutCreate'))
+      .mockResolvedValueOnce(dummyResponse('checkoutLineItemsAdd'))
+    const { result } = renderHook(() => useCheckout({ query, queries }))
+    const { current } = result
 
-	it('should return userErrors if the request returned errors', async () => {
-		const queries = createMockQueries(false)
-		const checkoutCreate = jest.fn().mockResolvedValue({
-			data: {
-				checkoutCreate: {
-					checkoutUserErrors: [{ field: 'email', message: 'That is not a valid email' }],
-				},
-			},
-		})
-		const { result } = renderHook(() => useCheckout({ ...queries, checkoutCreate }))
-		await wait()
-		act(() => {
-			result.current.addToCheckout({ lineItems: [dummyLineItemAdd] })
-		})
-		await wait()
-		expect(result.current.checkoutUserErrors[0].message).toBe('That is not a valid email')
-	})
+    await wait()
+    expect(current.checkout).toBe(undefined)
+    act(() => {
+      current.checkoutLineItemsAdd([dummyLineItemAdd])
+    })
+
+    await wait()
+    expect(result.current.checkout).toBeTruthy()
+    if (!result.current.checkout) throw new Error('checkout was not created')
+    expect(query).toHaveBeenCalledTimes(2)
+    expect(result.current.checkout.id).toBe('foo')
+
+    act(() => {
+      current.clearCheckout()
+    })
+    expect(result.current.checkout).toBe(undefined)
+    expect(result.current.checkoutUserErrors).toBe(undefined)
+  })
+
+  it('should return userErrors if the request returned errors', async () => {
+    const query = jest
+      .fn()
+      .mockResolvedValueOnce(dummyResponse('checkoutCreate'))
+      .mockResolvedValueOnce(
+        dummyResponse('checkoutLineItemsAdd', {
+          checkoutUserErrors: [
+            { field: 'email', message: 'That is not a valid email' },
+          ],
+        }),
+      )
+    const { result } = renderHook(() => useCheckout({ query, queries }))
+    const { current } = result
+
+    await wait()
+    expect(current.checkout).toBe(undefined)
+    act(() => {
+      current.checkoutLineItemsAdd([dummyLineItemAdd])
+    })
+    await wait()
+    expect(result.current.checkoutUserErrors[0].message).toBe(
+      'That is not a valid email',
+    )
+  })
+  // it('[addToCheckout] should add new items to the current checkout', async () => {
+  // 	const queries = createMockQueries()
+  // 	const { result } = renderHook(() => useCheckout(queries))
+  // 	await wait()
+  //
+  // 	act(() => {
+  // 		result.current.addToCheckout({ lineItems: [dummyLineItemAdd] })
+  // 	})
+  // 	await wait()
+  // 	expect(queries.checkoutCreate).toHaveBeenCalledTimes(0)
+  // 	expect(queries.checkoutLineItemsAdd).toHaveBeenCalledTimes(1)
+  // 	act(() => {
+  // 		result.current.addToCheckout({ lineItems: [dummyLineItemAdd] })
+  // 	})
+  // 	await wait()
+  // 	expect(queries.checkoutLineItemsAdd).toHaveBeenCalledTimes(2)
+  // })
+  //
+  // it('[addItemToCheckout] should add a single item to the current checkout', async () => {
+  // 	const queries = createMockQueries()
+  // 	const { result } = renderHook(() => useCheckout(queries))
+  // 	await wait()
+  // 	act(() => {
+  // 		result.current.addItemToCheckout({ ...dummyLineItemAdd, quantity: 3 })
+  // 	})
+  // 	await wait()
+  // 	expect(queries.checkoutLineItemsAdd).toHaveBeenCalledTimes(1)
+  // })
+  //
+  // it('[updateQuantity] should update the quantity of a given variant', async () => {
+  // 	const queries = createMockQueries()
+  // 	const { result } = renderHook(() => useCheckout(queries))
+  // 	await wait()
+  // 	act(() => {
+  // 		result.current.addToCheckout({ lineItems: [dummyLineItemAdd] })
+  // 	})
+  // 	await wait()
+  // 	act(() => {
+  // 		result.current.updateQuantity({ id: '123', quantity: 100 })
+  // 	})
+  // 	await wait()
+  // 	expect(queries.checkoutLineItemsUpdate).toHaveBeenCalledTimes(1)
+  // 	expect(queries.checkoutLineItemsUpdate).toHaveBeenCalledWith({
+  // 		checkoutId: 'foo',
+  // 		lineItems: [{ quantity: 100, id: '123' }],
+  // 	})
+  // })
+  //
+  // it('[applyDiscount] should create a checkout if none exists', async () => {
+  // 	const queries = createMockQueries(false)
+  // 	const { result } = renderHook(() => useCheckout(queries))
+  // 	await wait()
+  // 	act(() => {
+  // 		result.current.applyDiscount('specialDiscount')
+  // 	})
+  // 	await wait()
+  // 	await wait()
+  //
+  // 	if (!result.current.checkout) throw new Error('checkout was not created')
+  // 	expect(queries.checkoutCreate).toHaveBeenCalledTimes(1)
+  // 	expect(queries.checkoutDiscountCodeApply).toHaveBeenCalledTimes(1)
+  // 	expect(queries.checkoutDiscountCodeApply).toHaveBeenCalledWith({
+  // 		checkoutId: 'foo',
+  // 		discountCode: 'specialDiscount',
+  // 	})
+  // 	expect(result.current.checkout.id).toBe('foo')
+  // })
+  //
+  // it('[applyDiscount] should create a checkout if none exists', async () => {
+  // 	const queries = createMockQueries()
+  // 	const { result } = renderHook(() => useCheckout(queries))
+  // 	await wait()
+  // 	act(() => {
+  // 		result.current.applyDiscount('specialDiscount')
+  // 	})
+  // 	await wait()
+  // 	await wait()
+  //
+  // 	if (!result.current.checkout) throw new Error('checkout was not created')
+  // 	expect(queries.checkoutCreate).toHaveBeenCalledTimes(0)
+  // 	expect(queries.checkoutDiscountCodeApply).toHaveBeenCalledTimes(1)
+  // 	expect(queries.checkoutDiscountCodeApply).toHaveBeenCalledWith({
+  // 		checkoutId: 'foo',
+  // 		discountCode: 'specialDiscount',
+  // 	})
+  // 	expect(result.current.checkout.id).toBe('foo')
+  // })
+  //
+  // it('[removeDiscount] should remove the current discount code', async () => {
+  // 	const queries = createMockQueries()
+  // 	const { result } = renderHook(() => useCheckout(queries))
+  // 	act(() => {
+  // 		result.current.addToCheckout({ lineItems: [dummyLineItemAdd] })
+  // 	})
+  // 	await wait()
+  // 	act(() => {
+  // 		result.current.applyDiscount('specialDiscount')
+  // 	})
+  //
+  // 	await wait()
+  // 	act(() => {
+  // 		result.current.removeDiscount()
+  // 	})
+  // 	await wait()
+  //
+  // 	if (!result.current.checkout) throw new Error('checkout was not created')
+  // 	expect(queries.checkoutDiscountCodeRemove).toHaveBeenCalledWith({
+  // 		checkoutId: 'foo',
+  // 	})
+  // })
+  //
 })
