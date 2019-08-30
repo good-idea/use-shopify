@@ -1,18 +1,14 @@
-// import { CheckoutResponse, CheckoutLineItemInput } from './sharedTypes';
-import { CheckoutResponse, CheckoutLineItemInput } from './sharedTypes'
-
-import { checkoutFields } from '../fragments'
-
-export type CheckoutLineItemsUpdate = (input: CheckoutLineItemsUpdateInput) => CheckoutLineItemsUpdateResponse
+import { CheckoutResponse, CheckoutLineItemUpdateInput } from '../../types'
+import { checkoutFields } from '../../graphql/fragments'
 
 export interface CheckoutLineItemsUpdateInput {
 	checkoutId: string
-	lineItems: CheckoutLineItemInput[]
+	lineItems: CheckoutLineItemUpdateInput[]
 }
 
 export type CheckoutLineItemsUpdateResponse = CheckoutResponse<'checkoutLineItemsUpdate'>
 
-export const UPDATE_ITEM_MUTATION = /* GraphQL */ `
+export const CHECKOUT_LINE_ITEMS_UPDATE = /* GraphQL */ `
 	mutation CheckoutLineItemsUpdate(
 		$checkoutId: ID!,
     $lineItems: [CheckoutLineItemUpdateInput!]!

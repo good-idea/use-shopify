@@ -6,7 +6,7 @@ export const useCheckout = () => {
 	return checkout
 }
 
-// export const useFetchProductByHandle = () => {
-// 	const { fetchProductByHandle } = useContext(ShopifyContext)
-// 	return fetchProductByHandle
-// }
+export const useSearch = () => {
+	const { search } = useContext(ShopifyContext)
+	return search
+}

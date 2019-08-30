@@ -1,168 +1,159 @@
 import * as React from 'react'
-import { unwindEdges } from '@good-idea/unwind-edges'
-import { SearchQuery, SearchQueryResult, SearchQueryInput } from './searchQuery'
-import { tail } from '../utils/fp'
+import { memoize } from 'lodash'
+import { Paginated } from '@good-idea/unwind-edges'
+import { DocumentNode } from 'graphql'
+import { Product, Collection, QueryFunction } from '../types'
+import { defaultQueries, SearchQueryResult, SearchQueryInput } from './searchQuery'
+import { NEW_SEARCH, FETCHED_RESULTS, reducer } from './reducer'
 
-const { useReducer } = React
+const { useEffect, useReducer, useMemo } = React
 
-interface SearchQueries {
-	search: SearchQuery
+/**
+ * API
+ */
+
+export interface UseSearchQueries {
+	SEARCH_QUERY: string | DocumentNode
 }
 
-interface SearchOptions {
-	query: string
-	collections?: boolean
-	products?: boolean
+export interface UseSearchConfig {
+	collections: boolean
+	products: boolean
+	memoize: boolean
+	pageSize: number
 }
 
-export interface UseSearchValues {
-	search: (options: SearchOptions) => Promise<SearchQueryResult>
-	loadMore: () => Promise<SearchQueryResult>
+interface UseSearchArguments {
+	query: QueryFunction
+	config?: Partial<UseSearchConfig>
+	queries?: Partial<UseSearchQueries>
+}
+
+export interface UseSearchValues extends Pick<SearchState, 'loading' | 'results' | 'hasMoreResults'> {
+	search: (searchTerm: string) => Promise<void>
+	foo: string
+	// loadMore: () => Promise<SearchQueryResult>
 }
 
 /**
  * State
  */
 
-interface SearchState {
+interface SearchResults {
+	products?: Paginated<Product>
+	collections?: Paginated<Collection>
+}
+
+export interface SearchState {
 	loading: boolean
-	results?: SearchQueryResult
-	currentQuery?: string
-	productCursor?: string
-	collectionCursor?: string
-	hasNextPage: boolean
-}
-
-const NEW_SEARCH = 'NEW_SEARCH'
-const FETCH_MORE = 'FETCH_MORE'
-const FETCHED_RESULTS = 'FETCHED_RESULTS'
-
-type NewSearchAction = {
-	type: typeof NEW_SEARCH
-	query: string
-}
-
-type FetchMoreAction = {
-	type: typeof FETCH_MORE
-}
-
-type FetchedResultsAction = {
-	type: typeof FETCHED_RESULTS
-	results: SearchQueryResult
-}
-
-type Action = NewSearchAction | FetchMoreAction | FetchedResultsAction
-
-const initialState: SearchState = {
-	loading: false,
-	results: undefined,
-	hasNextPage: false,
-}
-
-const reducer = (state: SearchState, action: Action): SearchState => {
-	switch (action.type) {
-		case NEW_SEARCH:
-			return {
-				...state,
-				currentQuery: action.query,
-				results: undefined,
-				productCursor: undefined,
-				collectionCursor: undefined,
-				loading: true,
-			}
-		case FETCH_MORE:
-			return {
-				...state,
-				loading: true,
-			}
-		case FETCHED_RESULTS:
-			const { results } = action
-			const [products, productsPageInfo] = unwindEdges(results.products)
-			const [collections, collectionsPageInfo] = unwindEdges(results.collections)
-			/* If these results include new collections or products, update the cursors */
-			const productCursor = products.length ? tail(products).id : state.productCursor
-			const collectionCursor = collections.length ? tail(collections).id : state.collectionCursor
-			/* Set hasNextPage to true if either group has more pages */
-			const hasNextPage = productsPageInfo.pageInfo.hasNextPage || collectionsPageInfo.pageInfo.hasNextPage
-			return {
-				...state,
-				productCursor,
-				collectionCursor,
-				hasNextPage,
-				results,
-			}
-		default:
-			return state
-	}
+	products: Product[]
+	collections: Collection[]
+	results?: SearchResults
+	config?: UseSearchConfig
+	hasMoreResults: boolean
 }
 
 /**
  * Utils
  */
 
-const buildSearchOptions = (options: SearchOptions, state: SearchState): SearchQueryInput => {
-	const { query, products, collections } = options
-	const { productCursor, collectionCursor } = state
+const getSearchVariables = (searchTerm: string, searchState: SearchState): SearchQueryInput => {
+	const { pageSize, products, collections } = searchState.config
 
-	const productQuery = products ? `${query}` : '__NO__SEARCH'
-	const collectionQuery = collections ? `${query}` : '__NO_SEARCH'
+	const productQuery = products ? `${searchTerm}` : '__NO__SEARCH'
+	const collectionQuery = collections ? `${searchTerm}` : '__NO_SEARCH'
 
 	const searchOptions = {
 		productQuery,
-		productFirst: 36,
-		productAfter: productCursor,
+		productFirst: pageSize,
+		// productAfter: productCursor,
 
 		collectionQuery,
-		collectionFirst: 36,
-		collectionAfter: collectionCursor,
+		collectionFirst: pageSize,
+		// collectionAfter: collectionCursor,
 	}
 	return searchOptions
 }
-
-const emptyResult = {
-	products: {
-		pageInfo: {
-			hasNextPage: false,
-			hasPreviousPage: false,
-		},
-		edges: [],
-	},
-	collections: {
-		pageInfo: {
-			hasNextPage: false,
-			hasPreviousPage: false,
-		},
-		edges: [],
-	},
+const defaultConfig = {
+	collections: true,
+	products: true,
+	memoize: true,
+	pageSize: 96,
 }
 
-export const useSearch = ({ search: searchQuery }: SearchQueries): UseSearchValues => {
+const getInitialState = (userConfig: Partial<UseSearchConfig>): SearchState => ({
+	loading: false,
+	results: undefined,
+	hasMoreResults: false,
+	products: [],
+	collections: [],
+	config: {
+		...defaultConfig,
+		...userConfig,
+	},
+})
+
+/**
+ * useSearch
+ */
+
+export const useSearch = <ExpectedResult extends SearchQueryResult>({
+	query: userQuery,
+	config: userConfig,
+	queries,
+}: UseSearchArguments): UseSearchValues => {
+	const [state, dispatch] = useReducer(reducer, getInitialState(userConfig))
+
+	/* Memoize the query function */
+	const query = state.config.memoize
+		? useMemo(() => memoize(userQuery, (...args) => JSON.stringify(args)), [userQuery])
+		: userQuery
+
+	const { SEARCH_QUERY } = {
+		...defaultQueries,
+		...queries,
+	}
+
+	const runSearch = async (variables: SearchQueryInput) => {
+		const response = await query<ExpectedResult, SearchQueryInput>(SEARCH_QUERY, variables)
+		const { data } = response
+		dispatch({ type: FETCHED_RESULTS, results: data as ExpectedResult })
+	}
+
 	/**
-	 * Hooks Setup
+	 * Updates the settings for a new search,
+	 * and resets product & collection cursors
 	 */
-	const [state, dispatch] = useReducer(reducer, initialState)
-
-	const search = async (options: SearchOptions) => {
-		dispatch({ type: NEW_SEARCH, query: options.query })
-		const searchOptions = buildSearchOptions(options, state)
-		const response = await searchQuery(searchOptions)
-		const { data } = response
-		dispatch({ type: FETCHED_RESULTS, results: data })
-		return data
+	const search = async (searchTerm: string) => {
+		dispatch({ type: NEW_SEARCH })
+		const variables = getSearchVariables(searchTerm, state)
+		runSearch(variables)
+		// const variables = getSearchVariables(searchTerm, options, state)
+		// const response = await query<SearchQueryResult, SearchQueryInput>(SEARCH_QUERY, variables)
+		// const { data } = response
+		// return data
 	}
+	//
+	// const loadMore = async () => {
+	// 	if (!state.hasNextPage) return emptyResult
+	// 	dispatch({ type: FETCH_MORE })
+	// 	const variables = getSearchVariables(state.currentOptions, state)
+	// 	const response = await query<SearchQueryResult, SearchQueryInputSearchInput>(SEARCH_QUERY, variables)
+	// 	const { data } = response
+	// 	dispatch({ type: FETCHED_RESULTS, results: data })
+	// 	return data
+	// }
+	//
 
-	const loadMore = async () => {
-		if (!state.hasNextPage) return emptyResult
-		dispatch({ type: FETCH_MORE })
-		const searchOptions = buildSearchOptions(options, state)
-		const response = await searchQuery(searchOptions)
-		const { data } = response
-		dispatch({ type: FETCHED_RESULTS, results: data })
-		return data
-	}
-
+	const { loading, results, hasMoreResults } = state
 	return {
+		// State
+		loading,
+		results,
+		hasMoreResults,
+		foo: 'bar',
+		// Methods
 		search,
-		loadMore,
+		// loadMore,
 	}
 }

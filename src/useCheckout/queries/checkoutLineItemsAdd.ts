@@ -1,7 +1,5 @@
-import { CheckoutResponse, CheckoutLineItemInput } from './sharedTypes'
-import { checkoutFields } from '../fragments'
-
-export type CheckoutLineItemsAdd = (input: CheckoutLineItemsAddInput) => CheckoutLineItemsAddResponse
+import { CheckoutResponse, CheckoutLineItemInput } from '../../types'
+import { checkoutFields } from '../../graphql/fragments'
 
 export interface CheckoutLineItemsAddInput {
 	checkoutId: string
@@ -10,7 +8,7 @@ export interface CheckoutLineItemsAddInput {
 
 export type CheckoutLineItemsAddResponse = CheckoutResponse<'checkoutLineItemsAdd'>
 
-export const ADD_ITEM_MUTATION = /* GraphQL */ `
+export const CHECKOUT_LINE_ITEMS_ADD = /* GraphQL */ `
 	mutation CheckoutLineItemsAdd(
 		$checkoutId: ID!
 		$lineItems: [CheckoutLineItemInput!]!

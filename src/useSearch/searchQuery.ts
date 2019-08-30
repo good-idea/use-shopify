@@ -91,3 +91,5 @@ query SearchQuery(
   ${collectionFragment}
 }
 `
+
+export const defaultQueries = { SEARCH_QUERY }

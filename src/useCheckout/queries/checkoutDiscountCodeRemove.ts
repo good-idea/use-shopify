@@ -1,7 +1,5 @@
-import { CheckoutResponse } from './sharedTypes'
-import { checkoutFields } from '../fragments'
-
-export type CheckoutDiscountCodeRemove = (input: CheckoutDiscountCodeRemoveInput) => CheckoutDiscountCodeRemoveResponse
+import { CheckoutResponse } from '../../types'
+import { checkoutFields } from '../../graphql/fragments'
 
 export interface CheckoutDiscountCodeRemoveInput {
 	checkoutId: string
@@ -9,7 +7,7 @@ export interface CheckoutDiscountCodeRemoveInput {
 
 export type CheckoutDiscountCodeRemoveResponse = CheckoutResponse<'checkoutDiscountCodeRemove'>
 
-export const REMOVE_DISCOUNT_MUTATION = /* GraphQL */ `
+export const CHECKOUT_DISCOUNT_CODE_REMOVE = /* GraphQL */ `
 	mutation CheckoutDiscountCodeRemove(
 		$checkoutId: ID!
 	) {

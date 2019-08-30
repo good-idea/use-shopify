@@ -1,5 +1,5 @@
-import { CheckoutLineItemInput, AttributeInput, MailingAddressInput, CheckoutResponse } from './sharedTypes'
-import { checkoutFields } from '../fragments'
+import { CheckoutLineItemInput, AttributeInput, MailingAddressInput, CheckoutResponse } from '../../types'
+import { checkoutFields } from '../../graphql/fragments'
 
 export type CheckoutCreate = (input: CheckoutCreateInput) => CheckoutCreateResponse
 
@@ -14,7 +14,7 @@ export interface CheckoutCreateInput {
 
 export type CheckoutCreateResponse = CheckoutResponse<'checkoutCreate'>
 
-export const CREATE_CHECKOUT_MUTATION = /* GraphQL */ `
+export const CHECKOUT_CREATE = /* GraphQL */ `
 	mutation CheckoutCreate(
 		$email: String
 		$lineItems: [CheckoutLineItemInput!]

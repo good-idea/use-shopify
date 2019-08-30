@@ -100,3 +100,46 @@ export interface Checkout {
 	updatedAt?: Date
 	webUrl?: string
 }
+
+export interface MailingAddressInput {
+	address1?: string
+	address2?: string
+	city?: string
+	company?: string
+	country?: string
+	firstName?: string
+	phone?: string
+	provice?: string
+	zip?: string
+}
+
+export interface AttributeInput {
+	key: string
+	value: string
+}
+
+export interface CheckoutLineItemInput {
+	id: string
+	quantity: number
+	customAttributes?: AttributeInput[]
+}
+
+export interface CheckoutLineItemUpdateInput {
+	id?: string
+	variantId?: string
+	quantity: number
+	customAttributes?: AttributeInput[]
+}
+
+export interface UserError {
+	code: string
+	field: string[]
+	message: string
+}
+
+export type CheckoutResponse<Key extends string> = {
+	[K in Key]: {
+		checkout?: Checkout
+		checkoutUserErrors?: UserError[]
+	}
+}
