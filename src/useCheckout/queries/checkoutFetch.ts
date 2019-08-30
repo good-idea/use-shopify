@@ -1,12 +1,12 @@
 import { Checkout } from '../../types'
-import { checkoutFields } from '../../graphql/fragments'
+import { checkoutFields } from '../../graphql'
 
 export interface CheckoutFetchInput {
-	id: string
+  id: string
 }
 
 export interface CheckoutFetchResponse {
-	node: Checkout
+  node: Checkout
 }
 
 export const CHECKOUT_FETCH = /* GraphQL */ `

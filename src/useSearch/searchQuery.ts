@@ -1,32 +1,32 @@
 import { Paginated } from '@good-idea/unwind-edges'
 import { Product, Collection } from '../types'
-import { productFragment, collectionFragment } from '../graphql/fragments'
+import { productFragment, collectionFragment } from '../graphql'
 
 export type SearchQuery = (
-	input: SearchQueryInput,
+  input: SearchQueryInput,
 ) => Promise<{
-	data: SearchQueryResult
+  data: SearchQueryResult
 }>
 
 export interface SearchQueryResult {
-	products: Paginated<Product>
-	collections: Paginated<Collection>
+  products: Paginated<Product>
+  collections: Paginated<Collection>
 }
 
 export interface SearchQueryInput {
-	productQuery: string
-	productFirst: number
-	productAfter?: string
-	productLast?: number
-	productBefore?: string
-	productReverse?: boolean
+  productQuery: string
+  productFirst: number
+  productAfter?: string
+  productLast?: number
+  productBefore?: string
+  productReverse?: boolean
 
-	collectionQuery: string
-	collectionFirst: number
-	collectionAfter?: string
-	collectionLast?: number
-	collectionBefore?: string
-	collectionReverse?: boolean
+  collectionQuery: string
+  collectionFirst: number
+  collectionAfter?: string
+  collectionLast?: number
+  collectionBefore?: string
+  collectionReverse?: boolean
 }
 
 export const SEARCH_QUERY = /* GraphQL */ `

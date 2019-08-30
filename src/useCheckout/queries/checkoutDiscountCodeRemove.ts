@@ -1,11 +1,13 @@
 import { CheckoutResponse } from '../../types'
-import { checkoutFields } from '../../graphql/fragments'
+import { checkoutFields } from '../../graphql'
 
 export interface CheckoutDiscountCodeRemoveInput {
-	checkoutId: string
+  checkoutId: string
 }
 
-export type CheckoutDiscountCodeRemoveResponse = CheckoutResponse<'checkoutDiscountCodeRemove'>
+export type CheckoutDiscountCodeRemoveResponse = CheckoutResponse<
+  'checkoutDiscountCodeRemove'
+>
 
 export const CHECKOUT_DISCOUNT_CODE_REMOVE = /* GraphQL */ `
 	mutation CheckoutDiscountCodeRemove(

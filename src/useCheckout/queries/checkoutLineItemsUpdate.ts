@@ -1,12 +1,14 @@
 import { CheckoutResponse, CheckoutLineItemUpdateInput } from '../../types'
-import { checkoutFields } from '../../graphql/fragments'
+import { checkoutFields } from '../../graphql'
 
 export interface CheckoutLineItemsUpdateInput {
-	checkoutId: string
-	lineItems: CheckoutLineItemUpdateInput[]
+  checkoutId: string
+  lineItems: CheckoutLineItemUpdateInput[]
 }
 
-export type CheckoutLineItemsUpdateResponse = CheckoutResponse<'checkoutLineItemsUpdate'>
+export type CheckoutLineItemsUpdateResponse = CheckoutResponse<
+  'checkoutLineItemsUpdate'
+>
 
 export const CHECKOUT_LINE_ITEMS_UPDATE = /* GraphQL */ `
 	mutation CheckoutLineItemsUpdate(

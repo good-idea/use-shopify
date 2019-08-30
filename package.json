@@ -22,7 +22,7 @@
     "fix:tslint": "tslint --fix --project .",
     "linky": "yalc publish",
     "linky:watch": "nodemon -w ./lib --delay 250ms -x yalc publish --push --changed",
-    "test": "run-s build test:lint test:unit",
+    "test": "run-s test:lint test:unit",
     "test:lint": "tslint --project .",
     "test:unit": "jest --collectCoverage",
     "test:watch": "jest --watch",
