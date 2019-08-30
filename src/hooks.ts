@@ -2,11 +2,11 @@ import { useContext } from 'react'
 import { ShopifyContext } from './Provider'
 
 export const useCheckout = () => {
-	const { checkout } = useContext(ShopifyContext)
-	return checkout
+  const { checkout } = useContext(ShopifyContext)
+  return checkout
 }
 
-// export const useFetchProductByHandle = () => {
-// 	const { fetchProductByHandle } = useContext(ShopifyContext)
-// 	return fetchProductByHandle
-// }
+export const useSearch = () => {
+  const { search } = useContext(ShopifyContext)
+  return search
+}
