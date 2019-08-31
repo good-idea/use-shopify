@@ -21,4 +21,4 @@ jobs:
       deploy:
         provider: script
         skip_cleanup: true
-        script: yarn test && yarn build && npm whoami && yarn semantic-release && yarn test:coverage:send
+        script: yarn test && yarn build && echo "npm check:" && npm whoami && yarn semantic-release && yarn test:coverage:send
