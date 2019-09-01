@@ -1,0 +1,18 @@
+on:
+  push:
+    branches:
+      - !develop
+      - !master
+name: Auto PR from new branches → develop
+jobs:
+  createNewPullRequest:
+    name: Create New PR
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Create New Pull Request
+        uses: vsoch/pull-request-action@master
+        env:
+          BRANCH_PREFIX: develop
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PULL_REQUEST_BRANCH: develop
