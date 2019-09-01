@@ -6,7 +6,7 @@ on:
 name: Auto PR from new branches → develop
 jobs:
   createNewPullRequest:
-    name: Create New PR
+    name: Create [New Branch] → Develop PR
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
