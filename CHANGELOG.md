@@ -1,3 +1,10 @@
+## [0.4.1](https://github.com/good-idea/use-shopify/compare/v0.4.0...v0.4.1) (2019-09-01)
+
+
+### Bug Fixes
+
+* **repo:** debug npm token error ([7b54dc1](https://github.com/good-idea/use-shopify/commit/7b54dc1))
+
 # [0.4.0](https://github.com/good-idea/use-shopify/compare/v0.3.7...v0.4.0) (2019-08-31)
 
 ### Bug Fixes
