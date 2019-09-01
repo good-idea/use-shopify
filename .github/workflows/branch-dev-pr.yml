@@ -1,7 +1,8 @@
-on: push
-branches:
-  - !develop
-  - !master
+on:
+  push:
+    branches:
+      - !develop
+      - !master
 name: Auto PR from new branches → develop
 jobs:
   createNewPullRequest:
