@@ -5,7 +5,7 @@ on:
 name: Auto PR from Develop → Master
 jobs:
   createNewPullRequest:
-    name: Create New PR
+    name: Create New Develop → Master PR
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
