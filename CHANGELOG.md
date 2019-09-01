@@ -1,3 +1,21 @@
+# [0.4.0](https://github.com/good-idea/use-shopify/compare/v0.3.7...v0.4.0) (2019-08-31)
+
+
+### Bug Fixes
+
+* **repo:** debug npm token error ([29e9cde](https://github.com/good-idea/use-shopify/commit/29e9cde))
+* **repo:** debug npm token error ([1aa3491](https://github.com/good-idea/use-shopify/commit/1aa3491))
+* **use-shopify:** fix build error ([32b95ed](https://github.com/good-idea/use-shopify/commit/32b95ed))
+* **use-shopify:** fix graphql queries, use graphql-tag ([4473870](https://github.com/good-idea/use-shopify/commit/4473870))
+* **use-shopify:** fix linting errors ([9ab59f6](https://github.com/good-idea/use-shopify/commit/9ab59f6))
+
+
+### Features
+
+* **use-shopify:** add search hook ([e4a7f26](https://github.com/good-idea/use-shopify/commit/e4a7f26))
+* **use-shopify:** memoize and debounce calls to search ([b1a3d7a](https://github.com/good-idea/use-shopify/commit/b1a3d7a))
+* **use-shopify:** use better debounce function ([b52bd9a](https://github.com/good-idea/use-shopify/commit/b52bd9a))
+
 ## [0.3.7](https://github.com/good-idea/use-shopify/compare/v0.3.6...v0.3.7) (2019-08-21)
 
 
