@@ -1,6 +1,6 @@
 {
   "name": "use-shopify",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "React hooks to work with Shopify's Storefront API",
   "repository": "https://github.com/good-idea/use-shopify",
   "main": "lib/index.js",
@@ -10,7 +10,12 @@
     "lib"
   ],
   "license": "MIT",
-  "keywords": ["shopify", "react", "react hook", "graphql"],
+  "keywords": [
+    "shopify",
+    "react",
+    "react hook",
+    "graphql"
+  ],
   "scripts": {
     "cm": "git-cz",
     "describe": "npm-scripts-info",
