@@ -42,7 +42,7 @@ export const reducer = (
       return {
         ...state,
         checkout: undefined,
-        checkoutUserErrors: undefined,
+        checkoutUserErrors: [],
         loading: false,
         ready: true,
       }

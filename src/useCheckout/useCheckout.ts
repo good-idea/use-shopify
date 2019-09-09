@@ -148,12 +148,13 @@ export const useCheckout = ({
     if (state.checkout) return { checkout: state.checkout }
     const result = await query<CheckoutCreateResponse, CheckoutCreateInput>(
       CHECKOUT_CREATE,
-      variables,
+      variables || {},
     )
 
-    if (result.data.checkoutCreate.checkout)
-      setViewerCartCookie(result.data.checkoutCreate.checkout.id)
-    dispatch({ type: CREATED_CHECKOUT, ...result.data.checkoutCreate })
+    const { checkoutCreate } = result.data
+
+    if (checkoutCreate.checkout) setViewerCartCookie(checkoutCreate.checkout.id)
+    dispatch({ type: CREATED_CHECKOUT, ...checkoutCreate })
     return result.data.checkoutCreate
   }
 
@@ -167,7 +168,9 @@ export const useCheckout = ({
 
   const fetchCheckout = async () => {
     const checkoutToken = getViewerCartCookie()
+    console.log(checkoutToken)
     if (checkoutToken) {
+      console.log('!!!!')
       /* If a token exists, fetch it from Shopify */
       const variables = { id: checkoutToken }
       const result = await query<CheckoutFetchResponse, CheckoutFetchInput>(
@@ -177,6 +180,7 @@ export const useCheckout = ({
       const checkout = result.data ? result.data.node : undefined
       dispatch({ type: FETCHED_CHECKOUT, checkout })
     } else {
+      console.log('???!!???')
       /* When no token exists, dispatch this to set "loading" to false. */
       /* This might deserve its own action type, "NOTHING_TO_FETCH" */
       dispatch({ type: FETCHED_CHECKOUT, checkout: undefined })
@@ -184,8 +188,13 @@ export const useCheckout = ({
   }
 
   const checkoutLineItemsAdd = async (lineItems: CheckoutLineItemInput[]) => {
-    dispatch({ type: STARTED_REQUEST })
     const { checkout } = await getOrCreateCheckout()
+    if (!checkout)
+      throw new Error(
+        'checkoutLineItemsAdd was called before a checkout was created.',
+      )
+    dispatch({ type: STARTED_REQUEST })
+
     const variables = { lineItems, checkoutId: checkout.id }
     const result = await query<
       CheckoutLineItemsAddResponse,
@@ -216,6 +225,10 @@ export const useCheckout = ({
 
   const checkoutDiscountCodeApply = async (discountCode: string) => {
     const { checkout } = await getOrCreateCheckout()
+    if (!checkout)
+      throw new Error(
+        'checkoutDiscountCodeApply was called before a checkout was created.',
+      )
     dispatch({ type: STARTED_REQUEST })
     const result = await query<
       CheckoutDiscountCodeApplyResponse,
@@ -232,6 +245,10 @@ export const useCheckout = ({
 
   const checkoutDiscountCodeRemove = async () => {
     const { checkout } = await getOrCreateCheckout()
+    if (!checkout)
+      throw new Error(
+        'checkoutDiscountCodeRemove was called before a checkout was created.',
+      )
 
     dispatch({ type: STARTED_REQUEST })
     const result = await query<
@@ -268,6 +285,10 @@ export const useCheckout = ({
    * Effects
    */
 
+  // @ts-ignore-next-line
+  // Fixing this ts error messes up the tests in a confusing way,
+  // it seems like the mock functions are leaking between the tests,
+  // or something, I don't know :(
   useEffect(() => fetchCheckout, []) // fetch the checkout on load
 
   const value = {
