@@ -151,11 +151,12 @@ export const useCheckout = ({
       variables || {},
     )
 
-    const { checkoutCreate } = result.data
+    const { checkoutCreate: checkoutCreateResponse } = result.data
 
-    if (checkoutCreate.checkout) setViewerCartCookie(checkoutCreate.checkout.id)
-    dispatch({ type: CREATED_CHECKOUT, ...checkoutCreate })
-    return result.data.checkoutCreate
+    if (checkoutCreateResponse.checkout)
+      setViewerCartCookie(checkoutCreateResponse.checkout.id)
+    dispatch({ type: CREATED_CHECKOUT, ...checkoutCreateResponse })
+    return checkoutCreateResponse
   }
 
   const getOrCreateCheckout = async (variables?: CheckoutCreateInput) =>
@@ -168,9 +169,7 @@ export const useCheckout = ({
 
   const fetchCheckout = async () => {
     const checkoutToken = getViewerCartCookie()
-    console.log(checkoutToken)
     if (checkoutToken) {
-      console.log('!!!!')
       /* If a token exists, fetch it from Shopify */
       const variables = { id: checkoutToken }
       const result = await query<CheckoutFetchResponse, CheckoutFetchInput>(
@@ -180,7 +179,6 @@ export const useCheckout = ({
       const checkout = result.data ? result.data.node : undefined
       dispatch({ type: FETCHED_CHECKOUT, checkout })
     } else {
-      console.log('???!!???')
       /* When no token exists, dispatch this to set "loading" to false. */
       /* This might deserve its own action type, "NOTHING_TO_FETCH" */
       dispatch({ type: FETCHED_CHECKOUT, checkout: undefined })

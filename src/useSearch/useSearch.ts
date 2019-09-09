@@ -169,14 +169,17 @@ export const useSearch = <ExpectedResult extends SearchQueryResult>({
    * Updates the settings for a new search,
    * and resets product & collection cursors
    */
-  const search = async (searchTerm?: string) => {
-    dispatch({ type: NEW_SEARCH, searchTerm })
-    const variables = getSearchVariables(searchTerm || state.searchTerm, state)
+  const search = async (newSearchTerm?: string) => {
+    dispatch({ type: NEW_SEARCH, searchTerm: newSearchTerm })
+    const variables = getSearchVariables(
+      newSearchTerm || state.searchTerm,
+      state,
+    )
     runSearch(variables)
   }
 
-  const setSearchTerm = (searchTerm: string = '') =>
-    dispatch({ type: SET_SEARCH_TERM, searchTerm })
+  const setSearchTerm = (newSearchTerm: string = '') =>
+    dispatch({ type: SET_SEARCH_TERM, searchTerm: newSearchTerm })
 
   // const loadMore = async () => {
   // 	if (!state.hasNextPage) return emptyResult
