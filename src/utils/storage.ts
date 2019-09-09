@@ -51,7 +51,7 @@ export const persistData = (
 export const retrieveData = <ExpectedResult>(
   key: string,
   forceCookie: boolean,
-): ExpectedResult => {
+): ExpectedResult | null => {
   const value =
     window.localStorage !== null && forceCookie !== true
       ? window.localStorage.getItem(key)
