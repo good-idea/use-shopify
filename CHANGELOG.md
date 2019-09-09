@@ -1,3 +1,16 @@
+# [0.5.0](https://github.com/good-idea/use-shopify/compare/v0.4.1...v0.5.0) (2019-09-09)
+
+
+### Bug Fixes
+
+* **use-shopify:** fix tslint errors ([dcf65dc](https://github.com/good-idea/use-shopify/commit/dcf65dc))
+* **use-shopify:** fix useCheckout with updated tsconfig ([5cec612](https://github.com/good-idea/use-shopify/commit/5cec612))
+
+
+### Features
+
+* **use-shopify:** add setSearchTerm & tests to useSearch ([4b5406e](https://github.com/good-idea/use-shopify/commit/4b5406e))
+
 ## [0.4.1](https://github.com/good-idea/use-shopify/compare/v0.4.0...v0.4.1) (2019-09-01)
 
 
