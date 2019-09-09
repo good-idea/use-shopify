@@ -70,7 +70,7 @@ export const reducer = (state: SearchState, action: Action): SearchState => {
         ...state,
         products: [...state.products, ...products],
         collections: [...state.collections, ...collections],
-        results: [results, action.results],
+        results: [...state.results, results],
         loading: false,
       }
     default:
