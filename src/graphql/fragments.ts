@@ -29,6 +29,71 @@ export const collectionFragment = gql`
   ${imageFragment}
 `
 
+export const productWithoutVariantsFragment = gql`
+  fragment ProductWithoutVariantsFragment on Product {
+    availableForSale
+    createdAt
+    description
+    descriptionHtml
+    handle
+    id
+    productType
+    publishedAt
+    tags
+    title
+    vendor
+    images(first: 100) {
+      edges {
+        node {
+          ...ImageFragment
+        }
+      }
+    }
+    options(first: 100) {
+      id
+      name
+      values
+    }
+    priceRange {
+      maxVariantPrice {
+        ...MoneyV2Fragment
+      }
+      minVariantPrice {
+        ...MoneyV2Fragment
+      }
+    }
+  }
+
+  ${imageFragment}
+  ${moneyV2Fragment}
+`
+
+export const variantWithProductFragment = gql`
+  fragment VariantWithProductFragment on ProductVariant {
+    id
+    sku
+    title
+    weight
+    weightUnit
+    compareAtPriceV2 {
+      ...MoneyV2Fragment
+    }
+    priceV2 {
+      ...MoneyV2Fragment
+    }
+    product {
+      ...ProductWithoutVariantsFragment
+    }
+    requiresShipping
+    selectedOptions {
+      name
+      value
+    }
+  }
+  ${moneyV2Fragment}
+  ${productWithoutVariantsFragment}
+`
+
 export const variantFragment = gql`
   fragment VariantFragment on ProductVariant {
     availableForSale
@@ -138,11 +203,11 @@ export const lineItemFragment = gql`
       }
     }
     variant {
-      ...VariantFragment
+      ...VariantWithProductFragment
     }
   }
   ${discountApplicationFragment}
-  ${variantFragment}
+  ${variantWithProductFragment}
 `
 
 export const checkoutFragment = gql`
