@@ -1,10 +1,12 @@
-export const moneyV2Fragment = /* GraphQL */ `
+import gql from 'graphql-tag'
+
+export const moneyV2Fragment = gql`
   fragment MoneyV2Fragment on MoneyV2 {
     amount
     currencyCode
   }
 `
-export const imageFragment = /* GraphQL */ `
+export const imageFragment = gql`
   fragment ImageFragment on Image {
     altText
     id
@@ -12,7 +14,7 @@ export const imageFragment = /* GraphQL */ `
   }
 `
 
-export const collectionFragment = /* GraphQL */ `
+export const collectionFragment = gql`
   fragment CollectionFragment on Collection {
     description
     descriptionHtml
@@ -27,7 +29,30 @@ export const collectionFragment = /* GraphQL */ `
   ${imageFragment}
 `
 
-export const productFragment = /* GraphQL */ `
+export const variantFragment = gql`
+  fragment VariantFragment on ProductVariant {
+    availableForSale
+    id
+    sku
+    title
+    weight
+    weightUnit
+    compareAtPriceV2 {
+      ...MoneyV2Fragment
+    }
+    priceV2 {
+      ...MoneyV2Fragment
+    }
+    requiresShipping
+    selectedOptions {
+      name
+      value
+    }
+  }
+  ${moneyV2Fragment}
+`
+
+export const productFragment = gql`
   fragment ProductFragment on Product {
     availableForSale
     createdAt
@@ -67,23 +92,7 @@ export const productFragment = /* GraphQL */ `
       }
       edges {
         node {
-          availableForSale
-          id
-          sku
-          title
-          weight
-          weightUnit
-          compareAtPriceV2 {
-            ...MoneyV2Fragment
-          }
-          priceV2 {
-            ...MoneyV2Fragment
-          }
-          requiresShipping
-          selectedOptions {
-            name
-            value
-          }
+          ...VariantFragment
         }
       }
     }
@@ -91,89 +100,92 @@ export const productFragment = /* GraphQL */ `
 
   ${imageFragment}
   ${moneyV2Fragment}
+  ${variantFragment}
 `
 
-const discountApplicationFields = /* GraphQL */ `
-allocationMethod
-targetSelection
-targetType
-...on DiscountCodeApplication {
-	code
-	applicable
-}
-value {
-	...on PricingPercentageValue {
-		percentage
-	}
-	...on MoneyV2 {
-    ...MoneyV2Fragment
-	}
-}
-${moneyV2Fragment}
+export const discountApplicationFragment = gql`
+  fragment DiscountApplicationFragment on DiscountApplication {
+    allocationMethod
+    targetSelection
+    targetType
+    ... on DiscountCodeApplication {
+      code
+      applicable
+    }
+    value {
+      ... on PricingPercentageValue {
+        percentage
+      }
+      ... on MoneyV2 {
+        ...MoneyV2Fragment
+      }
+    }
+  }
+  ${moneyV2Fragment}
 `
 
-export const checkoutFields = /* GraphQL */ `
-id
-email
-paymentDueV2 {
-  ...MoneyV2Fragment
-}
-webUrl
-completedAt
-shippingLine {
-	handle
-	price
-	title
-}
-discountApplications(first: 100) {
-	pageInfo {
-		hasNextPage
-		hasPreviousPage
-	}
-	edges {
-		cursor
-		node {
-			${discountApplicationFields}
-		}
-	}
-}
-lineItems(first: 100) {
-	pageInfo {
-		hasNextPage
-		hasPreviousPage
-	}
-	edges {
-		cursor
-		node {
-			id
-			quantity
-			title
-			discountAllocations {
-				allocatedAmount {
-          ...MoneyV2Fragment
-				}
-				discountApplication {
-					${discountApplicationFields}
-				}
-			}
-			variant {
-				id
-				title
-        priceV2 {
-          ...MoneyV2Fragment
+export const lineItemFragment = gql`
+  fragment LineItemFragment on CheckoutLineItem {
+    id
+    quantity
+    title
+    discountAllocations {
+      allocatedAmount {
+        ...MoneyV2Fragment
+      }
+      discountApplication {
+        ...DiscountApplicationFragment
+      }
+    }
+    variant {
+      ...VariantFragment
+    }
+  }
+  ${discountApplicationFragment}
+  ${variantFragment}
+`
+
+export const checkoutFragment = gql`
+  fragment CheckoutFragment on Checkout {
+    id
+    paymentDueV2 {
+      ...MoneyV2Fragment
+    }
+    webUrl
+    completedAt
+    shippingLine {
+      handle
+      price
+      title
+    }
+    email
+    discountApplications(first: 100) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        cursor
+        node {
+          ...DiscountApplicationFragment
         }
-				product {
-					id
-					title
-				}
-				image {
-					altText
-					id
-					originalSrc
-				}
-			}
-		}
-	}
-}
-${moneyV2Fragment}
+      }
+    }
+    lineItems(first: 100) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        cursor
+        node {
+          ...LineItemFragment
+        }
+      }
+    }
+  }
+
+  ${moneyV2Fragment}
+  ${discountApplicationFragment}
+  ${lineItemFragment}
 `

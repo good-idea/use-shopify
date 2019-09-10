@@ -10,7 +10,12 @@
     "lib"
   ],
   "license": "MIT",
-  "keywords": ["shopify", "react", "react hook", "graphql"],
+  "keywords": [
+    "shopify",
+    "react",
+    "react hook",
+    "graphql"
+  ],
   "scripts": {
     "cm": "git-cz",
     "describe": "npm-scripts-info",

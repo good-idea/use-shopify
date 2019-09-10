@@ -113,13 +113,15 @@ export interface MailingAddressInput {
   zip?: string
 }
 
+export const abc = 'def'
+
 export interface AttributeInput {
   key: string
   value: string
 }
 
 export interface CheckoutLineItemInput {
-  id: string
+  variantId: string
   quantity: number
   customAttributes?: AttributeInput[]
 }
