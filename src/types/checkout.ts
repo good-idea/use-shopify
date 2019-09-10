@@ -113,8 +113,6 @@ export interface MailingAddressInput {
   zip?: string
 }
 
-export const abc = 'def'
-
 export interface AttributeInput {
   key: string
   value: string
