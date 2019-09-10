@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { memoize } from 'lodash'
+import * as m from '@thi.ng/memoize'
 import { DocumentNode } from 'graphql'
 import { debounce } from '../utils'
 import { Product, Collection, QueryFunction } from '../types'
@@ -97,8 +97,7 @@ const getSearchVariables = (
   }
 }
 
-const memoizeQueryFunction = (fn: QueryFunction) =>
-  memoize(fn, (...args) => JSON.stringify(args))
+const memoizeQueryFunction = (fn: QueryFunction) => m.memoizeJ(fn)
 
 const defaultConfig: UseSearchConfig = {
   collections: true,
