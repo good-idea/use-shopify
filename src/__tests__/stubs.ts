@@ -6,6 +6,11 @@ const dummyImage = {
   __typename: 'Image' as 'Image',
 }
 
+const dummyPrice = {
+  amount: 100.0,
+  currencyCode: 'USD' as 'USD',
+}
+
 export const dummyProduct: Product = {
   id: '123',
   handle: 'dummy-product',
@@ -34,7 +39,7 @@ export const dummyProduct: Product = {
           id: 'abc',
           availableForSale: true,
           image: dummyImage,
-          price: '100.00',
+          priceV2: dummyPrice,
           title: 'First',
         },
       },
@@ -48,7 +53,7 @@ export const dummyProduct: Product = {
             originalSrc: '/dummy-2.png',
             __typename: 'Image',
           },
-          price: '100.00',
+          priceV2: dummyPrice,
           title: 'Second',
         },
       },
@@ -62,7 +67,7 @@ export const dummyProduct: Product = {
             originalSrc: '/dummy-2.png',
             __typename: 'Image',
           },
-          price: '100.00',
+          priceV2: dummyPrice,
           title: 'Third',
         },
       },

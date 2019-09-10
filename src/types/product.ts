@@ -11,8 +11,9 @@ interface SelectedOption {
 export interface Variant {
   id: string
   availableForSale: boolean
-  image: ShopifyImage
-  price: string
+  image?: ShopifyImage
+  priceV2: MoneyV2
+  product?: Product
   title: string
   selectedOptions?: SelectedOption[]
   weight?: number

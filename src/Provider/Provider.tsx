@@ -64,6 +64,7 @@ export const ShopifyProvider = ({
     query,
     config: config.checkout ? config.checkout : undefined,
   })
+
   const search = useSearch({ queries, query, config: config.search })
 
   const value = {

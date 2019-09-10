@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { memoize } from 'lodash'
-import { Paginated } from '@good-idea/unwind-edges'
+import * as m from '@thi.ng/memoize'
 import { DocumentNode } from 'graphql'
 import { debounce } from '../utils'
 import { Product, Collection, QueryFunction } from '../types'
@@ -11,13 +10,13 @@ import {
 } from './searchQuery'
 import {
   SET_SEARCH_TERM,
-  RESET,
+  // RESET,
   NEW_SEARCH,
   FETCHED_RESULTS,
   reducer,
 } from './reducer'
 
-const { useEffect, useReducer, useMemo } = React
+const { useReducer, useMemo } = React
 
 /**
  * API
@@ -98,8 +97,7 @@ const getSearchVariables = (
   }
 }
 
-const memoizeQueryFunction = (fn: QueryFunction) =>
-  memoize(fn, (...args) => JSON.stringify(args))
+const memoizeQueryFunction = (fn: QueryFunction) => m.memoizeJ(fn)
 
 const defaultConfig: UseSearchConfig = {
   collections: true,

@@ -3,10 +3,11 @@ import { wait, act } from '@testing-library/react'
 import { useCheckout } from '../useCheckout'
 // import { dummyProduct } from './stubs'
 import * as defaultUseCheckoutQueries from '../useCheckout/queries'
+import { VIEWER_CART_TOKEN, removeCookie } from '../utils/storage'
 
 jest.useFakeTimers()
 
-const dummyLineItemAdd = { id: 'checkoutIdxyz', quantity: 1 }
+const dummyLineItemAdd = { variantId: 'checkoutIdxyz', quantity: 1 }
 
 const defaultDummyCheckoutResponse = {
   checkout: {
@@ -15,16 +16,21 @@ const defaultDummyCheckoutResponse = {
   checkoutUserErrors: [],
 }
 
-const dummyResponse = (key: string, response: any = {}) => ({
-  data: {
-    [key]: {
-      ...defaultDummyCheckoutResponse,
-      ...response,
+const dummyResponse = (key: string, response: any = {}) => {
+  return {
+    data: {
+      [key]: {
+        ...defaultDummyCheckoutResponse,
+        ...response,
+      },
     },
-  },
-})
-
+  }
+}
 const queries = defaultUseCheckoutQueries
+
+afterEach(() => {
+  removeCookie(VIEWER_CART_TOKEN)
+})
 
 beforeAll(() => {
   console.error = jest.fn()
@@ -83,9 +89,11 @@ describe('useCheckout', () => {
       )
     const { result } = renderHook(() => useCheckout({ query, queries }))
 
+    await wait()
     act(() => {
       result.current.checkoutLineItemsAdd([dummyLineItemAdd])
     })
+
     await wait()
     act(() => {
       result.current.checkoutLineItemsUpdate([dummyLineItemAdd])

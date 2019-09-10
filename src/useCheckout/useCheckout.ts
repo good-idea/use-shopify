@@ -107,6 +107,7 @@ export interface CheckoutState {
 
 const setViewerCartCookie = (token: string) =>
   setCookie(VIEWER_CART_TOKEN, token)
+
 const getViewerCartCookie = () => getCookie<string>(VIEWER_CART_TOKEN)
 
 interface CheckoutAndErrors {
@@ -135,7 +136,6 @@ export const useCheckout = ({
    */
 
   const [state, dispatch] = useReducer(reducer, initialState)
-
   /**
    * Base Methods
    *
@@ -283,11 +283,9 @@ export const useCheckout = ({
    * Effects
    */
 
-  // @ts-ignore-next-line
-  // Fixing this ts error messes up the tests in a confusing way,
-  // it seems like the mock functions are leaking between the tests,
-  // or something, I don't know :(
-  useEffect(() => fetchCheckout, []) // fetch the checkout on load
+  useEffect(() => {
+    fetchCheckout()
+  }, []) // fetch the checkout on load
 
   const value = {
     ...state,

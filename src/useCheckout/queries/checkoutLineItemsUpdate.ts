@@ -1,5 +1,6 @@
+import gql from 'graphql-tag'
 import { CheckoutResponse, CheckoutLineItemUpdateInput } from '../../types'
-import { checkoutFields } from '../../graphql'
+import { checkoutFragment } from '../../graphql'
 
 export interface CheckoutLineItemsUpdateInput {
   checkoutId: string
@@ -10,23 +11,21 @@ export type CheckoutLineItemsUpdateResponse = CheckoutResponse<
   'checkoutLineItemsUpdate'
 >
 
-export const CHECKOUT_LINE_ITEMS_UPDATE = /* GraphQL */ `
-	mutation CheckoutLineItemsUpdate(
-		$checkoutId: ID!,
+export const CHECKOUT_LINE_ITEMS_UPDATE = gql`
+  mutation CheckoutLineItemsUpdate(
+    $checkoutId: ID!
     $lineItems: [CheckoutLineItemUpdateInput!]!
-	) {
-		checkoutLineItemsUpdate(
-      checkoutId: $checkoutId
-      lineItems: $lineItems
-		) {
-			checkoutUserErrors {
-				code
-				field
-				message
-			}
-			checkout {
-				${checkoutFields}
-			}
-		}
-	}
+  ) {
+    checkoutLineItemsUpdate(checkoutId: $checkoutId, lineItems: $lineItems) {
+      checkoutUserErrors {
+        code
+        field
+        message
+      }
+      checkout {
+        ...CheckoutFragment
+      }
+    }
+  }
+  ${checkoutFragment}
 `

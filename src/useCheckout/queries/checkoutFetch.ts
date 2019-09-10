@@ -1,5 +1,6 @@
+import gql from 'graphql-tag'
 import { Checkout } from '../../types'
-import { checkoutFields } from '../../graphql'
+import { checkoutFragment } from '../../graphql'
 
 export interface CheckoutFetchInput {
   id: string
@@ -9,13 +10,14 @@ export interface CheckoutFetchResponse {
   node: Checkout
 }
 
-export const CHECKOUT_FETCH = /* GraphQL */ `
+export const CHECKOUT_FETCH = gql`
   query CheckoutQuery($id: ID!) {
-    node (id: $id) {
+    node(id: $id) {
       id
       ... on Checkout {
-        ${checkoutFields}
+        ...CheckoutFragment
       }
     }
   }
+  ${checkoutFragment}
 `

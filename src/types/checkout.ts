@@ -119,7 +119,7 @@ export interface AttributeInput {
 }
 
 export interface CheckoutLineItemInput {
-  id: string
+  variantId: string
   quantity: number
   customAttributes?: AttributeInput[]
 }
