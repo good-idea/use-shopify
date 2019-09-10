@@ -6,7 +6,7 @@ import * as defaultUseCheckoutQueries from '../useCheckout/queries'
 
 jest.useFakeTimers()
 
-const dummyLineItemAdd = { id: 'checkoutIdxyz', quantity: 1 }
+const dummyLineItemAdd = { variantId: 'checkoutIdxyz', quantity: 1 }
 
 const defaultDummyCheckoutResponse = {
   checkout: {
