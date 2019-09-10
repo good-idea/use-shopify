@@ -1,3 +1,10 @@
+## [0.5.1](https://github.com/good-idea/use-shopify/compare/v0.5.0...v0.5.1) (2019-09-09)
+
+
+### Bug Fixes
+
+* **use-shopify:** clean up console.logs ([415d9ae](https://github.com/good-idea/use-shopify/commit/415d9ae))
+
 # [0.5.0](https://github.com/good-idea/use-shopify/compare/v0.4.1...v0.5.0) (2019-09-09)
 
 
