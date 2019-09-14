@@ -96,8 +96,6 @@ export const reducer = (state: SearchState, action: Action): SearchState => {
         config: state.config,
       }
     default:
-      // @ts-ignore
-      console.warn(`"${action.type}" is not handled in the reducer`)
       return state
   }
 }
