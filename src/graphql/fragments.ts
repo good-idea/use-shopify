@@ -84,6 +84,9 @@ export const variantWithProductFragment = gql`
     product {
       ...ProductWithoutVariantsFragment
     }
+    image {
+      ...ImageFragment
+    }
     requiresShipping
     selectedOptions {
       name
@@ -92,6 +95,7 @@ export const variantWithProductFragment = gql`
   }
   ${moneyV2Fragment}
   ${productWithoutVariantsFragment}
+  ${imageFragment}
 `
 
 export const variantFragment = gql`
@@ -113,8 +117,12 @@ export const variantFragment = gql`
       name
       value
     }
+    image {
+      ...ImageFragment
+    }
   }
   ${moneyV2Fragment}
+  ${imageFragment}
 `
 
 export const productFragment = gql`

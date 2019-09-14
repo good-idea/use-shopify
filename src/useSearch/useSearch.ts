@@ -10,9 +10,10 @@ import {
 } from './searchQuery'
 import {
   SET_SEARCH_TERM,
-  // RESET,
+  RESET,
   NEW_SEARCH,
   FETCHED_RESULTS,
+  initialState,
   reducer,
 } from './reducer'
 
@@ -57,6 +58,7 @@ export interface UseSearchValues
   > {
   search: (searchTerm?: string) => Promise<void>
   setSearchTerm: (searchTerm?: string) => void
+  reset: () => void
   // loadMore: () => Promise<SearchQueryResult>
 }
 
@@ -72,6 +74,8 @@ export interface SearchState {
   config: UseSearchConfig
   searchTerm: string
   hasMoreResults: boolean
+  stale: boolean
+  lastSearchTerm: string | void
 }
 
 /**
@@ -108,12 +112,7 @@ const defaultConfig: UseSearchConfig = {
 }
 
 const getInitialState = (config: UseSearchConfig): SearchState => ({
-  searchTerm: '',
-  loading: false,
-  results: [],
-  products: [],
-  collections: [],
-  hasMoreResults: false,
+  ...initialState,
   config,
 })
 
@@ -179,6 +178,8 @@ export const useSearch = <ExpectedResult extends SearchQueryResult>({
   const setSearchTerm = (newSearchTerm: string = '') =>
     dispatch({ type: SET_SEARCH_TERM, searchTerm: newSearchTerm })
 
+  const reset = () => dispatch({ type: RESET })
+
   // const loadMore = async () => {
   // 	if (!state.hasNextPage) return emptyResult
   // 	dispatch({ type: FETCH_MORE })
@@ -208,7 +209,7 @@ export const useSearch = <ExpectedResult extends SearchQueryResult>({
     /* Methods */
     search,
     setSearchTerm,
-    // reset
+    reset,
     // loadMore,
   }
 }
