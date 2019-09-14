@@ -39,6 +39,17 @@ type Action =
   | SetSearchTermAction
   | ResetAction
 
+export const initialState = {
+  searchTerm: '',
+  loading: false,
+  results: [],
+  products: [],
+  collections: [],
+  hasMoreResults: false,
+  stale: false,
+  lastSearchTerm: undefined,
+}
+
 export const reducer = (state: SearchState, action: Action): SearchState => {
   switch (action.type) {
     case NEW_SEARCH:
@@ -48,12 +59,16 @@ export const reducer = (state: SearchState, action: Action): SearchState => {
         results: [],
         products: [],
         collections: [],
+        lastSearchTerm: action.searchTerm
+          ? action.searchTerm
+          : state.searchTerm,
         loading: true,
       }
     case SET_SEARCH_TERM:
       return {
         ...state,
         searchTerm: action.searchTerm,
+        stale: action.searchTerm === state.lastSearchTerm,
       }
     case FETCH_MORE:
       return {
@@ -73,7 +88,16 @@ export const reducer = (state: SearchState, action: Action): SearchState => {
         results: [...state.results, results],
         loading: false,
       }
+
+    case RESET:
+      // reset everything but the initial config
+      return {
+        ...initialState,
+        config: state.config,
+      }
     default:
+      // @ts-ignore
+      console.warn(`"${action.type}" is not handled in the reducer`)
       return state
   }
 }
