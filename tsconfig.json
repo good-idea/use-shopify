@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "./lib",
-    "declaration": true,
+    "declaration": false,
     "declarationDir": "./lib",
     "target": "es5",
     "module": "es6",
@@ -41,7 +41,6 @@
     "types": ["jest"],
     "typeRoots": ["node_modules/@types"]
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules/**"],
-  "compileOnSave": false
+  "include": ["src"],
+  "exclude": ["node_modules/**"]
 }
