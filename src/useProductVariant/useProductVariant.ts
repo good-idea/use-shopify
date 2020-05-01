@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { unwindEdges } from '@good-idea/unwind-edges'
-import { Product, Variant } from '../types'
+import { Product, ProductVariant } from '../types'
 
 const { useState } = React
 
@@ -9,7 +9,7 @@ interface Options {
 }
 
 export interface UseProductVariant {
-  currentVariant?: Variant
+  currentVariant?: ProductVariant
   selectVariant: (variantId: string) => void
 }
 
@@ -21,7 +21,7 @@ export const useProductVariant = (product: Product, options: Options = {}) => {
    * Private Methods
    */
 
-  const findVariant = (variantId: string): Variant => {
+  const findVariant = (variantId: string): ProductVariant => {
     const variant = variants.find((v) => v.id === variantId)
     if (!variant)
       throw new Error(
@@ -30,7 +30,7 @@ export const useProductVariant = (product: Product, options: Options = {}) => {
     return variant
   }
 
-  const getInitialState = (): Variant => {
+  const getInitialState = (): ProductVariant => {
     if (!initialVariant || initialVariant === 'first') return variants[0]
     if (initialVariant === 'last') return variants[variants.length - 1]
     return findVariant(initialVariant)

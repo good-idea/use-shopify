@@ -1,0 +1,13 @@
+overwrite: true
+schema:
+  - https://good-idea-dev.myshopify.com/api/graphql:
+      headers:
+        X-Shopify-Storefront-Access-Token: 'd1fda2e02fbf98d5f82fbba3530b7771'
+generates:
+  src/types/generated.ts:
+    plugins:
+      - 'typescript'
+    config:
+      nonOptionalTypename: true
+      declarationKind:
+        type: 'interface'

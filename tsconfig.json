@@ -2,14 +2,13 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "./lib",
-    "declaration": true,
-    "declarationDir": "./lib",
     "target": "es5",
     "module": "es6",
     "moduleResolution": "node",
     "inlineSourceMap": true,
     "jsx": "react",
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
+    "skipLibCheck": true,
 
     "strict": true /* Enable all strict type-checking options. */,
 
@@ -41,7 +40,6 @@
     "types": ["jest"],
     "typeRoots": ["node_modules/@types"]
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules/**"],
-  "compileOnSave": false
+  "include": ["src"],
+  "exclude": ["node_modules", "./node_modules", "./node_modules/*"]
 }

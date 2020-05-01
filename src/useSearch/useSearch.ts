@@ -140,6 +140,11 @@ export const useSearch = <ExpectedResult extends SearchQueryResult>({
       ]) as QueryFunction)
     : userQueryFunction
 
+  const { SEARCH_QUERY } = {
+    ...defaultQueries,
+    ...queries,
+  }
+
   const runSearchFn = async (variables: SearchQueryInput) => {
     const response = await query<ExpectedResult, SearchQueryInput>(
       SEARCH_QUERY,
@@ -157,11 +162,6 @@ export const useSearch = <ExpectedResult extends SearchQueryResult>({
         )
       : runSearchFn
 
-  const { SEARCH_QUERY } = {
-    ...defaultQueries,
-    ...queries,
-  }
-
   /**
    * Updates the settings for a new search,
    * and resets product & collection cursors
@@ -175,7 +175,7 @@ export const useSearch = <ExpectedResult extends SearchQueryResult>({
     runSearch(variables)
   }
 
-  const setSearchTerm = (newSearchTerm: string = '') =>
+  const setSearchTerm = (newSearchTerm = '') =>
     dispatch({ type: SET_SEARCH_TERM, searchTerm: newSearchTerm })
 
   const reset = () => dispatch({ type: RESET })
