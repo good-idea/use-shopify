@@ -1,3 +1,11 @@
+## [0.7.2](https://github.com/good-idea/use-shopify/compare/v0.7.1...v0.7.2) (2020-05-01)
+
+
+### Bug Fixes
+
+* **use-shopify:** better define Variables type ([f1fe3d4](https://github.com/good-idea/use-shopify/commit/f1fe3d4))
+* **use-shopify:** better define Variables type (2) ([346bdf1](https://github.com/good-idea/use-shopify/commit/346bdf1))
+
 ## [0.7.1](https://github.com/good-idea/use-shopify/compare/v0.7.0...v0.7.1) (2020-05-01)
 
 
