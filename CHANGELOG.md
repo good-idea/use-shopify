@@ -1,3 +1,16 @@
+# [0.7.0](https://github.com/good-idea/use-shopify/compare/v0.6.0...v0.7.0) (2019-09-14)
+
+
+### Bug Fixes
+
+* **use-shopify:** add image fragment to variants ([b434c86](https://github.com/good-idea/use-shopify/commit/b434c86))
+* **use-shopify:** fix tslint error ([1dc506d](https://github.com/good-idea/use-shopify/commit/1dc506d))
+
+
+### Features
+
+* **use-shopify:** add stale, lastSearchTerm & reset to useSearch ([7da5269](https://github.com/good-idea/use-shopify/commit/7da5269))
+
 # [0.6.0](https://github.com/good-idea/use-shopify/compare/v0.5.1...v0.6.0) (2019-09-10)
 
 
