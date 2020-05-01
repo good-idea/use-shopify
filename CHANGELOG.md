@@ -1,3 +1,12 @@
+## [0.7.1](https://github.com/good-idea/use-shopify/compare/v0.7.0...v0.7.1) (2020-05-01)
+
+
+### Bug Fixes
+
+* **use-shopify:** add graphql codegen ([2f25a59](https://github.com/good-idea/use-shopify/commit/2f25a59))
+* **use-shopify:** fix failing tests ([c6dc927](https://github.com/good-idea/use-shopify/commit/c6dc927))
+* **use-shopify:** fix type exports ([5279d7b](https://github.com/good-idea/use-shopify/commit/5279d7b))
+
 # [0.7.0](https://github.com/good-idea/use-shopify/compare/v0.6.0...v0.7.0) (2019-09-14)
 
 
