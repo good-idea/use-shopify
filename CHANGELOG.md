@@ -1,3 +1,18 @@
+# [0.6.0](https://github.com/good-idea/use-shopify/compare/v0.5.1...v0.6.0) (2019-09-10)
+
+
+### Bug Fixes
+
+* **use-shopify:** fix checkoutLineItem type error in tests ([308e8e2](https://github.com/good-idea/use-shopify/commit/308e8e2))
+* **use-shopify:** fix shopify types ([3f66cb9](https://github.com/good-idea/use-shopify/commit/3f66cb9))
+* **use-shopify:** fix type exports ([387718e](https://github.com/good-idea/use-shopify/commit/387718e))
+* **use-shopify:** properly fetch the existing cart on load ([7ae4257](https://github.com/good-idea/use-shopify/commit/7ae4257))
+
+
+### Features
+
+* **use-shopify:** include product in lineItem query ([0d7b296](https://github.com/good-idea/use-shopify/commit/0d7b296))
+
 ## [0.5.1](https://github.com/good-idea/use-shopify/compare/v0.5.0...v0.5.1) (2019-09-09)
 
 
