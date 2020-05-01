@@ -5,11 +5,7 @@ import { Checkout, UserError } from './generated'
  * A function that implements uses a GraphQL library to imperitavely execute GraphQL queries and mutations.
  */
 
-interface VariablesObject {
-  [key: string]: string | number | boolean | void | null | VariablesObject
-}
-
-export type QueryFunction = <ExpectedResult, Variables extends VariablesObject>(
+export type QueryFunction = <ExpectedResult, Variables extends object>(
   query: string | DocumentNode,
   variables: Variables,
 ) => Promise<{ data: ExpectedResult }>
