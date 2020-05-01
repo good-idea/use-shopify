@@ -1,13 +1,17 @@
+/* eslint-disable no-console */
 import { renderHook } from '@testing-library/react-hooks'
 import { wait as rtlWait, act } from '@testing-library/react'
 import { useSearch } from '../useSearch'
 import { SEARCH_QUERY as defaultSearchQuery } from '../useSearch/searchQuery'
 
 beforeAll(() => {
+  console.warn = jest.fn()
   console.error = jest.fn()
 })
 
 afterAll(() => {
+  // @ts-ignore
+  if (console.warn.mockRestore) console.error.mockRestore()
   // @ts-ignore
   if (console.error.mockRestore) console.error.mockRestore()
 })

@@ -1,14 +1,17 @@
-import { Product } from '../types'
+import { Product, Image, MoneyV2, CurrencyCode } from '../types'
 
-const dummyImage = {
+const dummyImage: Image = {
   id: 'xyz',
+  src: '/dummy-1.png',
   originalSrc: '/dummy-1.png',
+  transformedSrc: '/dummy-1.png',
   __typename: 'Image' as 'Image',
 }
 
-const dummyPrice = {
+const dummyPrice: MoneyV2 = {
+  __typename: 'MoneyV2' as 'MoneyV2',
   amount: 100.0,
-  currencyCode: 'USD' as 'USD',
+  currencyCode: CurrencyCode.Usd,
 }
 
 export const dummyProduct: Product = {
@@ -18,19 +21,22 @@ export const dummyProduct: Product = {
   description: 'Just a dumb thing you can buy!',
   __typename: 'Product',
   images: {
+    __typename: 'ImageConnection',
     pageInfo: {
+      __typename: 'PageInfo',
       hasNextPage: false,
-      hasPrevPage: false,
+      hasPreviousPage: false,
     },
     edges: [
-      { cursor: '1', node: dummyImage },
-      { cursor: '2', node: dummyImage },
+      { __typename: 'ImageEdge', cursor: '1', node: dummyImage },
+      { __typename: 'ImageEdge', cursor: '2', node: dummyImage },
     ],
   },
   variants: {
     pageInfo: {
+      __typename: 'PageInfo',
       hasNextPage: false,
-      hasPrevPage: false,
+      hasPreviousPage: false,
     },
     edges: [
       {
@@ -73,4 +79,4 @@ export const dummyProduct: Product = {
       },
     ],
   },
-}
+} as Product

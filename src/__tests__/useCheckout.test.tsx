@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { renderHook } from '@testing-library/react-hooks'
 import { wait, act } from '@testing-library/react'
 import { useCheckout } from '../useCheckout'
@@ -34,9 +35,12 @@ afterEach(() => {
 
 beforeAll(() => {
   console.error = jest.fn()
+  console.warn = jest.fn()
 })
 
 afterAll(() => {
+  // @ts-ignore
+  console.warn.mockRestore()
   // @ts-ignore
   console.error.mockRestore()
 })
