@@ -2,8 +2,6 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "./lib",
-    "declaration": false,
-    "declarationDir": "./lib",
     "target": "es5",
     "module": "es6",
     "moduleResolution": "node",
