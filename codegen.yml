@@ -1,0 +1,13 @@
+generates:
+  src/types/generated.ts:
+    schema: ./src/schema.graphql
+    plugins:
+      - typescript
+    config:
+      nonOptionalTypename: true
+      typesPrefix: 'StorefrontApi'
+      scalars:
+        DateTime: Date
+        JSON: '{ [key: string]: any }'
+      declarationKind:
+        type: 'interface'
