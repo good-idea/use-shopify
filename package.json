@@ -19,7 +19,7 @@
   "scripts": {
     "cm": "git-cz",
     "describe": "npm-scripts-info",
-    "clean": "trash build test",
+    "clean": "trash lib test",
     "build": "yarn clean && rollup -c",
     "watch": "yarn clean && rollup -cw",
     "fix": "run-s fix:*",
