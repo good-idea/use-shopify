@@ -1,3 +1,11 @@
+## [0.7.4](https://github.com/good-idea/use-shopify/compare/v0.7.3...v0.7.4) (2020-05-02)
+
+
+### Bug Fixes
+
+* **use-shopify:** fix types in tests ([05e4677](https://github.com/good-idea/use-shopify/commit/05e4677))
+* **use-shopify:** revert to manual types ([23b0c0c](https://github.com/good-idea/use-shopify/commit/23b0c0c))
+
 ## [0.7.3](https://github.com/good-idea/use-shopify/compare/v0.7.2...v0.7.3) (2020-05-01)
 
 
