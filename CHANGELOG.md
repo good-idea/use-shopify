@@ -1,3 +1,10 @@
+## [0.7.3](https://github.com/good-idea/use-shopify/compare/v0.7.2...v0.7.3) (2020-05-01)
+
+
+### Bug Fixes
+
+* **use-shopify:** fix type exports (again) ([27b6616](https://github.com/good-idea/use-shopify/commit/27b6616))
+
 ## [0.7.2](https://github.com/good-idea/use-shopify/compare/v0.7.1...v0.7.2) (2020-05-01)
 
 
