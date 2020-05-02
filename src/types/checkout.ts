@@ -112,7 +112,6 @@ export interface Checkout {
 }
 
 export interface MailingAddressInput {
-  __typename: string
   address1?: string
   address2?: string
   city?: string
@@ -125,7 +124,6 @@ export interface MailingAddressInput {
 }
 
 export interface AttributeInput {
-  __typename: string
   key: string
   value: string
 }
@@ -137,7 +135,6 @@ export interface CheckoutLineItemInput {
 }
 
 export interface CheckoutLineItemUpdateInput {
-  __typename: string
   id?: string
   variantId?: string
   quantity: number
