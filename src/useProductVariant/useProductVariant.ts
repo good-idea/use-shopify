@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { unwindEdges } from '@good-idea/unwind-edges'
-import { Product, ProductVariant } from '../types'
+import { unwindEdges, Paginated } from '@good-idea/unwind-edges'
+import { Variant as SourceVariant, Maybe } from '../types'
 
 const { useState } = React
 
@@ -8,12 +8,32 @@ interface Options {
   initialVariant?: string | 'first' | 'last'
 }
 
+interface Variant
+  extends Pick<SourceVariant, 'id' | 'title' | 'selectedOptions'> {
+  __typename: any
+}
+
+export type SomeVariant = Variant
+
 export interface UseProductVariant {
-  currentVariant?: ProductVariant
+  currentVariant?: Variant
   selectVariant: (variantId: string) => void
 }
 
-export const useProductVariant = (product: Product, options: Options = {}) => {
+interface Product<V> {
+  title?: Maybe<string>
+  variants?: Maybe<Paginated<Maybe<V>>>
+}
+
+interface ReturnValue<V> {
+  currentVariant: V
+  selectVariant: (id: string) => void
+}
+
+export const useProductVariant = <V extends Variant>(
+  product: Product<V>,
+  options: Options = {},
+): ReturnValue<V> => {
   const { initialVariant } = options
   const [variants] = unwindEdges(product.variants)
   if (!variants.length) throw new Error('The supplied product has no variants')
@@ -21,7 +41,7 @@ export const useProductVariant = (product: Product, options: Options = {}) => {
    * Private Methods
    */
 
-  const findVariant = (variantId: string): ProductVariant => {
+  const findVariant = (variantId: string): V => {
     const variant = variants.find((v) => v.id === variantId)
     if (!variant)
       throw new Error(
@@ -30,7 +50,7 @@ export const useProductVariant = (product: Product, options: Options = {}) => {
     return variant
   }
 
-  const getInitialState = (): ProductVariant => {
+  const getInitialState = (): V => {
     if (!initialVariant || initialVariant === 'first') return variants[0]
     if (initialVariant === 'last') return variants[variants.length - 1]
     return findVariant(initialVariant)
