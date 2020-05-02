@@ -1,6 +1,4 @@
-import { Product, Image, MoneyV2, CurrencyCode } from '../types'
-
-const dummyImage: Image = {
+const dummyImage = {
   id: 'xyz',
   src: '/dummy-1.png',
   originalSrc: '/dummy-1.png',
@@ -8,13 +6,13 @@ const dummyImage: Image = {
   __typename: 'Image' as 'Image',
 }
 
-const dummyPrice: MoneyV2 = {
+const dummyPrice = {
   __typename: 'MoneyV2' as 'MoneyV2',
   amount: 100.0,
-  currencyCode: CurrencyCode.Usd,
+  currencyCode: 'USD',
 }
 
-export const dummyProduct: Product = {
+export const dummyProduct = {
   id: '123',
   handle: 'dummy-product',
   title: 'Dummy Product',
@@ -33,6 +31,7 @@ export const dummyProduct: Product = {
     ],
   },
   variants: {
+    __typename: 'ProductVariants',
     pageInfo: {
       __typename: 'PageInfo',
       hasNextPage: false,
@@ -42,6 +41,7 @@ export const dummyProduct: Product = {
       {
         cursor: '234',
         node: {
+          __typename: 'ProductVariant',
           id: 'abc',
           availableForSale: true,
           image: dummyImage,
@@ -52,6 +52,7 @@ export const dummyProduct: Product = {
       {
         cursor: '345',
         node: {
+          __typename: 'ProductVariant',
           id: 'bcd',
           availableForSale: true,
           image: {
@@ -66,6 +67,7 @@ export const dummyProduct: Product = {
       {
         cursor: '456',
         node: {
+          __typename: 'ProductVariant',
           id: 'cde',
           availableForSale: true,
           image: {
@@ -79,4 +81,4 @@ export const dummyProduct: Product = {
       },
     ],
   },
-} as Product
+}

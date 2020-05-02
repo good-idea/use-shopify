@@ -1,5 +1,4 @@
 import { act, renderHook } from '@testing-library/react-hooks'
-import { Product } from '../types'
 import { useProductVariant } from '../useProductVariant'
 import { dummyProduct } from './stubs'
 
@@ -50,7 +49,7 @@ describe('useProductVariant', () => {
   })
 
   it('should throw if the product has no variants', () => {
-    const dummyProductNoVariants: Product = {
+    const dummyProductNoVariants = {
       ...dummyProduct,
       variants: {
         __typename: 'ProductVariantConnection',
