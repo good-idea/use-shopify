@@ -1,3 +1,5 @@
+import { Maybe } from '../types'
+
 export const debounce = <F extends (...args: any) => any>(
   func: F,
   waitFor: number,
@@ -22,3 +24,8 @@ export const debounce = <F extends (...args: any) => any>(
 //     }, delay)
 //   }
 // }
+
+export function definitely<T>(items?: Maybe<T>[] | null): T[] {
+  if (!items) return []
+  return items.reduce<T[]>((acc, item) => (item ? [...acc, item] : acc), [])
+}

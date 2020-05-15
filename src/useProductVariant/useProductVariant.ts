@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { unwindEdges, Paginated } from '@good-idea/unwind-edges'
-import { Variant as SourceVariant, Maybe } from '../types'
+import { DeepMaybe, Variant as SourceVariant, Maybe } from '../types'
 
 const { useState } = React
 
@@ -26,16 +26,16 @@ interface Product<V> {
 }
 
 interface ReturnValue<V> {
-  currentVariant: V
+  currentVariant: V | null
   selectVariant: (id: string) => void
 }
 
 export const useProductVariant = <V extends Variant>(
-  product: Product<V>,
+  product: DeepMaybe<Product<V>>,
   options: Options = {},
 ): ReturnValue<V> => {
   const { initialVariant } = options
-  const [variants] = unwindEdges(product.variants)
+  const variants = product.variants ? unwindEdges(product.variants)[0] : []
   if (!variants.length) throw new Error('The supplied product has no variants')
   /**
    * Private Methods
