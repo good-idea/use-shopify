@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { unwindEdges, Paginated } from '@good-idea/unwind-edges'
-import { DeepMaybe, Variant as SourceVariant, Maybe } from '../types'
+import { MaybeAll, Variant as SourceVariant, Maybe } from '../types'
 
 const { useState } = React
 
@@ -12,8 +12,6 @@ interface Variant
   extends Pick<SourceVariant, 'id' | 'title' | 'selectedOptions'> {
   __typename: any
 }
-
-export type SomeVariant = Variant
 
 export interface UseProductVariant {
   currentVariant?: Variant
@@ -30,8 +28,8 @@ interface ReturnValue<V> {
   selectVariant: (id: string) => void
 }
 
-export const useProductVariant = <V extends Variant>(
-  product: DeepMaybe<Product<V>>,
+export const useProductVariant = <V extends MaybeAll<Variant>>(
+  product: MaybeAll<Product<V>>,
   options: Options = {},
 ): ReturnValue<V> => {
   const { initialVariant } = options
