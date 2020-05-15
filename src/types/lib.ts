@@ -2,7 +2,7 @@ import { DocumentNode } from 'graphql'
 
 export type Maybe<T> = T | null
 
-export type DeepMaybe<T> = {
+export type MaybeAll<T> = {
   [K in keyof T]?: null | Maybe<T[K]>
 }
 
