@@ -8,8 +8,7 @@ interface Options {
   initialVariant?: string | 'first' | 'last'
 }
 
-interface Variant
-  extends Pick<SourceVariant, 'id' | 'title' | 'selectedOptions'> {
+interface Variant extends Pick<SourceVariant, 'id'> {
   __typename: any
 }
 
