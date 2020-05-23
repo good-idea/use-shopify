@@ -1,3 +1,11 @@
+## [0.7.5](https://github.com/good-idea/use-shopify/compare/v0.7.4...v0.7.5) (2020-05-15)
+
+
+### Bug Fixes
+
+* **use-shopify:** better type compatibility with partials/maybes ([764ee77](https://github.com/good-idea/use-shopify/commit/764ee77))
+* **use-shopify:** better type compatibility with partials/maybes (2) ([efa7c9b](https://github.com/good-idea/use-shopify/commit/efa7c9b))
+
 ## [0.7.4](https://github.com/good-idea/use-shopify/compare/v0.7.3...v0.7.4) (2020-05-02)
 
 
