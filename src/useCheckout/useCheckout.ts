@@ -12,6 +12,9 @@ import {
   CheckoutCreateInput,
   CheckoutCreateResponse,
   CheckoutFetchInput,
+  CheckoutAttributesUpdateArgs,
+  CheckoutAttributesUpdateV2Input,
+  CheckoutAttributesUpdateResponse,
   CheckoutFetchResponse,
   CheckoutDiscountCodeApplyInput,
   CheckoutDiscountCodeApplyResponse,
@@ -72,11 +75,15 @@ export interface UseCheckoutValues extends CheckoutState {
   ) => Promise<void>
   checkoutDiscountCodeApply: (discountCode: string) => Promise<void>
   checkoutDiscountCodeRemove: () => Promise<void>
+  checkoutAttributesUpdate: (
+    args: CheckoutAttributesUpdateV2Input,
+  ) => Promise<void>
 
   /* Shortcut Methods */
   addLineItem: (lineItem: CheckoutLineItemInput) => Promise<void>
   updateLineItem: (lineItem: CheckoutLineItemUpdateInput) => Promise<void>
   clearCheckout: () => Promise<void>
+  addNote: (note: string) => Promise<void>
 }
 
 /**
@@ -261,6 +268,28 @@ export const useCheckout = ({
     })
   }
 
+  const checkoutAttributesUpdate = async (
+    input: CheckoutAttributesUpdateV2Input,
+  ) => {
+    const { checkout } = await getOrCreateCheckout()
+    if (!checkout)
+      throw new Error(
+        'checkoutDiscountCodeApply was called before a checkout was created.',
+      )
+    dispatch({ type: STARTED_REQUEST })
+    const result = await query<
+      CheckoutAttributesUpdateResponse,
+      CheckoutAttributesUpdateArgs
+    >(CHECKOUT_DISCOUNT_CODE_APPLY, {
+      checkoutId: checkout.id,
+      input,
+    })
+    dispatch({
+      type: APPLIED_DISCOUNT,
+      ...result.data.checkoutAttributesUpdateV2,
+    })
+  }
+
   /**
    * Shortcut Methods
    *
@@ -275,6 +304,8 @@ export const useCheckout = ({
   /* Updates a single line item */
   const updateLineItem = async (lineItem: CheckoutLineItemUpdateInput) =>
     checkoutLineItemsUpdate([lineItem])
+
+  const addNote = (note: string) => checkoutAttributesUpdate({ note })
 
   /* Clears the cart */
   const clearCheckout = async () => dispatch({ type: CART_CLEARED })
@@ -295,11 +326,13 @@ export const useCheckout = ({
     checkoutLineItemsUpdate,
     checkoutDiscountCodeApply,
     checkoutDiscountCodeRemove,
+    checkoutAttributesUpdate,
 
     /* Shortcut Methods */
     addLineItem,
     updateLineItem,
     clearCheckout,
+    addNote,
   }
 
   return value
