@@ -209,10 +209,6 @@ export const lineItemFragment = gql`
       discountApplication {
         ...DiscountApplicationFragment
       }
-      selectedOptions {
-        name
-        value
-      }
     }
     variant {
       ...VariantWithProductFragment
