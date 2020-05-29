@@ -1,3 +1,10 @@
+## [0.8.2](https://github.com/good-idea/use-shopify/compare/v0.8.1...v0.8.2) (2020-05-29)
+
+
+### Bug Fixes
+
+* **use-shopify:** revert selectedOptions mistake ([aef6309](https://github.com/good-idea/use-shopify/commit/aef6309))
+
 ## [0.8.1](https://github.com/good-idea/use-shopify/compare/v0.8.0...v0.8.1) (2020-05-29)
 
 
