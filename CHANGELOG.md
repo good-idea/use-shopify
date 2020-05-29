@@ -1,3 +1,15 @@
+# [0.8.0](https://github.com/good-idea/use-shopify/compare/v0.7.6...v0.8.0) (2020-05-23)
+
+
+### Bug Fixes
+
+* **use-shopify:** fix mutation input ([f975176](https://github.com/good-idea/use-shopify/commit/f975176))
+
+
+### Features
+
+* **use-shopify:** add mutation for updating cart attributes ([e7b70a4](https://github.com/good-idea/use-shopify/commit/e7b70a4))
+
 ## [0.7.6](https://github.com/good-idea/use-shopify/compare/v0.7.5...v0.7.6) (2020-05-16)
 
 
