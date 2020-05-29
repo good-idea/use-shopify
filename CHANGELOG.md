@@ -1,3 +1,10 @@
+## [0.8.1](https://github.com/good-idea/use-shopify/compare/v0.8.0...v0.8.1) (2020-05-29)
+
+
+### Bug Fixes
+
+* **use-shopify:** add selectedOptions to variants ([5a69eb6](https://github.com/good-idea/use-shopify/commit/5a69eb6))
+
 # [0.8.0](https://github.com/good-idea/use-shopify/compare/v0.7.6...v0.8.0) (2020-05-23)
 
 
