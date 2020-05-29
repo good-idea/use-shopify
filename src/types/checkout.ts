@@ -51,6 +51,11 @@ interface DiscountAllocation {
   discountApplication: DiscountApplication
 }
 
+interface SelectedOption {
+  name: string
+  value: string
+}
+
 export interface CheckoutLineItem {
   __typename: string
   id: string
@@ -59,6 +64,7 @@ export interface CheckoutLineItem {
   variant: Variant
   customAttributes?: Attribute[]
   discountAllocations?: DiscountAllocation[]
+  selectedOptions: SelectedOption[]
 }
 
 export interface OrderLineItem {
