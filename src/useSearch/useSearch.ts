@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { memoize } from 'lodash'
-import { Paginated } from '@good-idea/unwind-edges'
+import * as m from '@thi.ng/memoize'
 import { DocumentNode } from 'graphql'
 import { debounce } from '../utils'
 import { Product, Collection, QueryFunction } from '../types'
@@ -9,9 +8,16 @@ import {
   SearchQueryResult,
   SearchQueryInput,
 } from './searchQuery'
-import { NEW_SEARCH, FETCHED_RESULTS, reducer } from './reducer'
+import {
+  SET_SEARCH_TERM,
+  RESET,
+  NEW_SEARCH,
+  FETCHED_RESULTS,
+  initialState,
+  reducer,
+} from './reducer'
 
-const { useEffect, useReducer, useMemo } = React
+const { useReducer, useMemo } = React
 
 /**
  * API
@@ -43,9 +49,16 @@ interface UseSearchArguments {
 export interface UseSearchValues
   extends Pick<
     SearchState,
-    'loading' | 'products' | 'collections' | 'results' | 'hasMoreResults'
+    | 'searchTerm'
+    | 'loading'
+    | 'products'
+    | 'collections'
+    | 'results'
+    | 'hasMoreResults'
   > {
-  search: (searchTerm: string) => Promise<void>
+  search: (searchTerm?: string) => Promise<void>
+  setSearchTerm: (searchTerm?: string) => void
+  reset: () => void
   // loadMore: () => Promise<SearchQueryResult>
 }
 
@@ -53,18 +66,16 @@ export interface UseSearchValues
  * State
  */
 
-interface SearchResults {
-  products?: Paginated<Product>
-  collections?: Paginated<Collection>
-}
-
 export interface SearchState {
   loading: boolean
   products: Product[]
   collections: Collection[]
-  results?: SearchResults[]
-  config?: UseSearchConfig
+  results: SearchQueryResult[]
+  config: UseSearchConfig
+  searchTerm: string
   hasMoreResults: boolean
+  stale: boolean
+  lastSearchTerm: string | void
 }
 
 /**
@@ -90,8 +101,7 @@ const getSearchVariables = (
   }
 }
 
-const memoizeQueryFunction = (fn: QueryFunction) =>
-  memoize(fn, (...args) => JSON.stringify(args))
+const memoizeQueryFunction = (fn: QueryFunction) => m.memoizeJ(fn)
 
 const defaultConfig: UseSearchConfig = {
   collections: true,
@@ -102,11 +112,7 @@ const defaultConfig: UseSearchConfig = {
 }
 
 const getInitialState = (config: UseSearchConfig): SearchState => ({
-  loading: false,
-  results: undefined,
-  hasMoreResults: false,
-  products: [],
-  collections: [],
+  ...initialState,
   config,
 })
 
@@ -129,10 +135,15 @@ export const useSearch = <ExpectedResult extends SearchQueryResult>({
    * debounce the Search function
    * Use React's useMemo so we only create these once */
   const query = state.config.memoize
-    ? useMemo(() => memoizeQueryFunction(userQueryFunction), [
+    ? (useMemo(() => memoizeQueryFunction(userQueryFunction), [
         userQueryFunction,
-      ])
+      ]) as QueryFunction)
     : userQueryFunction
+
+  const { SEARCH_QUERY } = {
+    ...defaultQueries,
+    ...queries,
+  }
 
   const runSearchFn = async (variables: SearchQueryInput) => {
     const response = await query<ExpectedResult, SearchQueryInput>(
@@ -140,7 +151,7 @@ export const useSearch = <ExpectedResult extends SearchQueryResult>({
       variables,
     )
     const { data } = response
-    dispatch({ type: FETCHED_RESULTS, results: data as ExpectedResult })
+    dispatch({ type: FETCHED_RESULTS, results: data })
   }
 
   const runSearch =
@@ -151,20 +162,23 @@ export const useSearch = <ExpectedResult extends SearchQueryResult>({
         )
       : runSearchFn
 
-  const { SEARCH_QUERY } = {
-    ...defaultQueries,
-    ...queries,
-  }
-
   /**
    * Updates the settings for a new search,
    * and resets product & collection cursors
    */
-  const search = async (searchTerm: string) => {
-    dispatch({ type: NEW_SEARCH })
-    const variables = getSearchVariables(searchTerm, state)
+  const search = async (newSearchTerm?: string) => {
+    dispatch({ type: NEW_SEARCH, searchTerm: newSearchTerm })
+    const variables = getSearchVariables(
+      newSearchTerm || state.searchTerm,
+      state,
+    )
     runSearch(variables)
   }
+
+  const setSearchTerm = (newSearchTerm = '') =>
+    dispatch({ type: SET_SEARCH_TERM, searchTerm: newSearchTerm })
+
+  const reset = () => dispatch({ type: RESET })
 
   // const loadMore = async () => {
   // 	if (!state.hasNextPage) return emptyResult
@@ -176,9 +190,17 @@ export const useSearch = <ExpectedResult extends SearchQueryResult>({
   // 	return data
   // }
 
-  const { loading, products, collections, results, hasMoreResults } = state
+  const {
+    searchTerm,
+    loading,
+    products,
+    collections,
+    results,
+    hasMoreResults,
+  } = state
   return {
     /* State */
+    searchTerm,
     loading,
     results,
     hasMoreResults,
@@ -186,6 +208,8 @@ export const useSearch = <ExpectedResult extends SearchQueryResult>({
     collections,
     /* Methods */
     search,
+    setSearchTerm,
+    reset,
     // loadMore,
   }
 }

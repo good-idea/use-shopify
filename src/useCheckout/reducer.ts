@@ -29,11 +29,11 @@ interface GenericAction {
   checkoutUserErrors?: UserError[]
 }
 
-type Action = StartedAction | GenericAction
+export type CheckoutAction = StartedAction | GenericAction
 
 export const reducer = (
   state: CheckoutState,
-  action: Action,
+  action: CheckoutAction,
 ): CheckoutState => {
   switch (action.type) {
     case STARTED_REQUEST:
@@ -42,7 +42,7 @@ export const reducer = (
       return {
         ...state,
         checkout: undefined,
-        checkoutUserErrors: undefined,
+        checkoutUserErrors: [],
         loading: false,
         ready: true,
       }

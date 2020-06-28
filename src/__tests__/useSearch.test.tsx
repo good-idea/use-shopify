@@ -1,13 +1,17 @@
+/* eslint-disable no-console */
 import { renderHook } from '@testing-library/react-hooks'
 import { wait as rtlWait, act } from '@testing-library/react'
 import { useSearch } from '../useSearch'
 import { SEARCH_QUERY as defaultSearchQuery } from '../useSearch/searchQuery'
 
 beforeAll(() => {
+  console.warn = jest.fn()
   console.error = jest.fn()
 })
 
 afterAll(() => {
+  // @ts-ignore
+  if (console.warn.mockRestore) console.error.mockRestore()
   // @ts-ignore
   if (console.error.mockRestore) console.error.mockRestore()
 })
@@ -280,5 +284,39 @@ describe('useSearch', () => {
 
   it.skip('should search with the page size supplied from the config', async () => {
     // expect(a).toBe(b)
+  })
+
+  it("should search with the state's `searchTerm` by default", async () => {
+    const query = jest.fn().mockResolvedValue({ data: '' })
+    const { result } = renderHook(() => useSearch({ query }))
+    result.current.setSearchTerm('lolwut')
+    result.current.search()
+    await wait()
+    expect(query.mock.calls[0][1].productQuery).toBe('lolwut')
+    expect(result.current.searchTerm).toBe('lolwut')
+  })
+
+  it("should ignore the state's `searchTerm` when given its own searchTerm argument", async () => {
+    const query = jest.fn().mockResolvedValue({ data: '' })
+    const { result } = renderHook(() => useSearch({ query }))
+    const { search, setSearchTerm } = result.current
+    setSearchTerm('lol wut')
+    await wait()
+    search('hello')
+    await wait()
+    expect(query.mock.calls[0][1].productQuery).toBe('hello')
+    expect(result.current.searchTerm).toBe('hello')
+  })
+})
+
+describe('useSearch [setSearchTerm]', () => {
+  it('should update the current search term', async () => {
+    const query = jest.fn().mockResolvedValue({ data: '' })
+    const { result } = renderHook(() => useSearch({ query }))
+    const { setSearchTerm } = result.current
+    expect(result.current.searchTerm).toBe('')
+    setSearchTerm('hello')
+    await wait()
+    expect(result.current.searchTerm).toBe('hello')
   })
 })

@@ -12,6 +12,9 @@ import {
   CheckoutCreateInput,
   CheckoutCreateResponse,
   CheckoutFetchInput,
+  CheckoutAttributesUpdateArgs,
+  CheckoutAttributesUpdateV2Input,
+  CheckoutAttributesUpdateResponse,
   CheckoutFetchResponse,
   CheckoutDiscountCodeApplyInput,
   CheckoutDiscountCodeApplyResponse,
@@ -72,11 +75,15 @@ export interface UseCheckoutValues extends CheckoutState {
   ) => Promise<void>
   checkoutDiscountCodeApply: (discountCode: string) => Promise<void>
   checkoutDiscountCodeRemove: () => Promise<void>
+  checkoutAttributesUpdate: (
+    args: CheckoutAttributesUpdateV2Input,
+  ) => Promise<void>
 
   /* Shortcut Methods */
   addLineItem: (lineItem: CheckoutLineItemInput) => Promise<void>
   updateLineItem: (lineItem: CheckoutLineItemUpdateInput) => Promise<void>
   clearCheckout: () => Promise<void>
+  addNote: (note: string) => Promise<void>
 }
 
 /**
@@ -107,6 +114,7 @@ export interface CheckoutState {
 
 const setViewerCartCookie = (token: string) =>
   setCookie(VIEWER_CART_TOKEN, token)
+
 const getViewerCartCookie = () => getCookie<string>(VIEWER_CART_TOKEN)
 
 interface CheckoutAndErrors {
@@ -135,7 +143,6 @@ export const useCheckout = ({
    */
 
   const [state, dispatch] = useReducer(reducer, initialState)
-
   /**
    * Base Methods
    *
@@ -148,13 +155,15 @@ export const useCheckout = ({
     if (state.checkout) return { checkout: state.checkout }
     const result = await query<CheckoutCreateResponse, CheckoutCreateInput>(
       CHECKOUT_CREATE,
-      variables,
+      variables || {},
     )
 
-    if (result.data.checkoutCreate.checkout)
-      setViewerCartCookie(result.data.checkoutCreate.checkout.id)
-    dispatch({ type: CREATED_CHECKOUT, ...result.data.checkoutCreate })
-    return result.data.checkoutCreate
+    const { checkoutCreate: checkoutCreateResponse } = result.data
+
+    if (checkoutCreateResponse.checkout)
+      setViewerCartCookie(checkoutCreateResponse.checkout.id)
+    dispatch({ type: CREATED_CHECKOUT, ...checkoutCreateResponse })
+    return checkoutCreateResponse
   }
 
   const getOrCreateCheckout = async (variables?: CheckoutCreateInput) =>
@@ -184,8 +193,13 @@ export const useCheckout = ({
   }
 
   const checkoutLineItemsAdd = async (lineItems: CheckoutLineItemInput[]) => {
-    dispatch({ type: STARTED_REQUEST })
     const { checkout } = await getOrCreateCheckout()
+    if (!checkout)
+      throw new Error(
+        'checkoutLineItemsAdd was called before a checkout was created.',
+      )
+    dispatch({ type: STARTED_REQUEST })
+
     const variables = { lineItems, checkoutId: checkout.id }
     const result = await query<
       CheckoutLineItemsAddResponse,
@@ -216,6 +230,10 @@ export const useCheckout = ({
 
   const checkoutDiscountCodeApply = async (discountCode: string) => {
     const { checkout } = await getOrCreateCheckout()
+    if (!checkout)
+      throw new Error(
+        'checkoutDiscountCodeApply was called before a checkout was created.',
+      )
     dispatch({ type: STARTED_REQUEST })
     const result = await query<
       CheckoutDiscountCodeApplyResponse,
@@ -232,6 +250,10 @@ export const useCheckout = ({
 
   const checkoutDiscountCodeRemove = async () => {
     const { checkout } = await getOrCreateCheckout()
+    if (!checkout)
+      throw new Error(
+        'checkoutDiscountCodeRemove was called before a checkout was created.',
+      )
 
     dispatch({ type: STARTED_REQUEST })
     const result = await query<
@@ -243,6 +265,28 @@ export const useCheckout = ({
     dispatch({
       type: REMOVED_DISCOUNT,
       ...result.data.checkoutDiscountCodeRemove,
+    })
+  }
+
+  const checkoutAttributesUpdate = async (
+    input: CheckoutAttributesUpdateV2Input,
+  ) => {
+    const { checkout } = await getOrCreateCheckout()
+    if (!checkout)
+      throw new Error(
+        'checkoutDiscountCodeApply was called before a checkout was created.',
+      )
+    dispatch({ type: STARTED_REQUEST })
+    const result = await query<
+      CheckoutAttributesUpdateResponse,
+      CheckoutAttributesUpdateArgs
+    >(CHECKOUT_DISCOUNT_CODE_APPLY, {
+      checkoutId: checkout.id,
+      input,
+    })
+    dispatch({
+      type: APPLIED_DISCOUNT,
+      ...result.data.checkoutAttributesUpdateV2,
     })
   }
 
@@ -261,6 +305,8 @@ export const useCheckout = ({
   const updateLineItem = async (lineItem: CheckoutLineItemUpdateInput) =>
     checkoutLineItemsUpdate([lineItem])
 
+  const addNote = (note: string) => checkoutAttributesUpdate({ note })
+
   /* Clears the cart */
   const clearCheckout = async () => dispatch({ type: CART_CLEARED })
 
@@ -268,7 +314,9 @@ export const useCheckout = ({
    * Effects
    */
 
-  useEffect(() => fetchCheckout, []) // fetch the checkout on load
+  useEffect(() => {
+    fetchCheckout()
+  }, []) // fetch the checkout on load
 
   const value = {
     ...state,
@@ -278,11 +326,13 @@ export const useCheckout = ({
     checkoutLineItemsUpdate,
     checkoutDiscountCodeApply,
     checkoutDiscountCodeRemove,
+    checkoutAttributesUpdate,
 
     /* Shortcut Methods */
     addLineItem,
     updateLineItem,
     clearCheckout,
+    addNote,
   }
 
   return value

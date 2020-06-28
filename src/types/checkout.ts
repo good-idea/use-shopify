@@ -4,6 +4,7 @@ import { Variant } from './product'
 import { MoneyV2, CurrencyCode } from './money'
 
 interface AppliedGiftCard {
+  __typename: string
   amountUsedV2: MoneyV2
   balanceV2: MoneyV2
   id: string
@@ -11,12 +12,14 @@ interface AppliedGiftCard {
 }
 
 interface ShippingRate {
+  __typename: string
   handle: string
   priceV2: MoneyV2
   title: string
 }
 
 interface AvailableShippingRates {
+  __typename: string
   ready: boolean
   shippingRates: ShippingRate[]
 }
@@ -27,12 +30,14 @@ interface Attribute {
 }
 
 interface PricingPercentageValue {
+  __typename: string
   percentage: number
 }
 
 type PricingValue = MoneyV2 | PricingPercentageValue
 
 export interface DiscountApplication {
+  __typename: string
   allocationMethod: 'ACROSS' | 'EACH' | 'ONE'
   targetSelection: 'ALL' | 'ENTITLED' | 'EXPLICIT'
   targetType: 'LINE_ITEM' | 'SHIPPING_LINE'
@@ -41,11 +46,13 @@ export interface DiscountApplication {
 }
 
 interface DiscountAllocation {
+  __typename: string
   allocatedAmount: MoneyV2
   discountApplication: DiscountApplication
 }
 
 export interface CheckoutLineItem {
+  __typename: string
   id: string
   quantity: number
   title: string
@@ -55,6 +62,7 @@ export interface CheckoutLineItem {
 }
 
 export interface OrderLineItem {
+  __typename: string
   customAttributes: Attribute[]
   discountAllocations: DiscountAllocation[]
   quanity: number
@@ -63,6 +71,7 @@ export interface OrderLineItem {
 }
 
 export interface Order {
+  __typename: string
   currencyCode: CurrencyCode
   customerLocale: string
   customerUrl: string
@@ -73,6 +82,7 @@ export interface Order {
 }
 
 export interface Checkout {
+  __typename: string
   appliedGiftCards?: AppliedGiftCard[]
   availableShippingRates?: AvailableShippingRates
   completedAt?: Date
@@ -119,7 +129,7 @@ export interface AttributeInput {
 }
 
 export interface CheckoutLineItemInput {
-  id: string
+  variantId: string
   quantity: number
   customAttributes?: AttributeInput[]
 }
@@ -132,6 +142,7 @@ export interface CheckoutLineItemUpdateInput {
 }
 
 export interface UserError {
+  __typename: string
   code: string
   field: string[]
   message: string

@@ -52,7 +52,12 @@ describe('useProductVariant', () => {
     const dummyProductNoVariants = {
       ...dummyProduct,
       variants: {
-        pageInfo: { hasNextPage: false, hasPrevPage: false },
+        __typename: 'ProductVariantConnection',
+        pageInfo: {
+          __typename: 'PageInfo',
+          hasNextPage: false,
+          hasPreviousPage: false,
+        },
         edges: [],
       },
     }
