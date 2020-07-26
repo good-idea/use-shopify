@@ -1,3 +1,11 @@
+## [0.8.3](https://github.com/good-idea/use-shopify/compare/v0.8.2...v0.8.3) (2020-07-26)
+
+
+### Bug Fixes
+
+* **repo:** fix eslint ignore settings ([38cf532](https://github.com/good-idea/use-shopify/commit/38cf532))
+* **use-shopify:** add typenames to queries ([beb76ab](https://github.com/good-idea/use-shopify/commit/beb76ab))
+
 ## [0.8.2](https://github.com/good-idea/use-shopify/compare/v0.8.1...v0.8.2) (2020-05-29)
 
 
