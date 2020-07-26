@@ -43,7 +43,7 @@
     "release": "np",
     "reset": "git clean -dfx && git reset --hard && npm i",
     "prepare-release": "run-s all version doc:publish",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release --branches main"
   },
   "scripts-info": {
     "info": "Display information about the package scripts",
