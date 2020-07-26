@@ -52,7 +52,7 @@ interface DiscountAllocation {
 }
 
 export interface CheckoutLineItem {
-  __typename: string
+  __typename: 'CheckoutLineItem'
   id: string
   quantity: number
   title: string

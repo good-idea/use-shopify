@@ -2,12 +2,14 @@ import gql from 'graphql-tag'
 
 export const moneyV2Fragment = gql`
   fragment MoneyV2Fragment on MoneyV2 {
+    __typename
     amount
     currencyCode
   }
 `
 export const imageFragment = gql`
   fragment ImageFragment on Image {
+    __typename
     altText
     id
     originalSrc
@@ -16,6 +18,7 @@ export const imageFragment = gql`
 
 export const collectionFragment = gql`
   fragment CollectionFragment on Collection {
+    __typename
     description
     descriptionHtml
     handle
@@ -31,6 +34,7 @@ export const collectionFragment = gql`
 
 export const productWithoutVariantsFragment = gql`
   fragment ProductWithoutVariantsFragment on Product {
+    __typename
     availableForSale
     createdAt
     description
@@ -43,18 +47,22 @@ export const productWithoutVariantsFragment = gql`
     title
     vendor
     images(first: 100) {
+      __typename
       edges {
+        __typename
         node {
           ...ImageFragment
         }
       }
     }
     options(first: 100) {
+      __typename
       id
       name
       values
     }
     priceRange {
+      __typename
       maxVariantPrice {
         ...MoneyV2Fragment
       }
@@ -70,6 +78,7 @@ export const productWithoutVariantsFragment = gql`
 
 export const variantWithProductFragment = gql`
   fragment VariantWithProductFragment on ProductVariant {
+    __typename
     id
     sku
     title
@@ -89,6 +98,7 @@ export const variantWithProductFragment = gql`
     }
     requiresShipping
     selectedOptions {
+      __typename
       name
       value
     }
@@ -100,6 +110,7 @@ export const variantWithProductFragment = gql`
 
 export const variantFragment = gql`
   fragment VariantFragment on ProductVariant {
+    __typename
     availableForSale
     id
     sku
@@ -114,6 +125,7 @@ export const variantFragment = gql`
     }
     requiresShipping
     selectedOptions {
+      __typename
       name
       value
     }
@@ -127,6 +139,7 @@ export const variantFragment = gql`
 
 export const productFragment = gql`
   fragment ProductFragment on Product {
+    __typename
     availableForSale
     createdAt
     description
@@ -139,18 +152,22 @@ export const productFragment = gql`
     title
     vendor
     images(first: 100) {
+      __typename
       edges {
+        __typename
         node {
           ...ImageFragment
         }
       }
     }
     options(first: 100) {
+      __typename
       id
       name
       values
     }
     priceRange {
+      __typename
       maxVariantPrice {
         ...MoneyV2Fragment
       }
@@ -159,11 +176,14 @@ export const productFragment = gql`
       }
     }
     variants(first: 100) {
+      __typename
       pageInfo {
+        __typename
         hasNextPage
         hasPreviousPage
       }
       edges {
+        __typename
         node {
           ...VariantFragment
         }
@@ -178,15 +198,18 @@ export const productFragment = gql`
 
 export const discountApplicationFragment = gql`
   fragment DiscountApplicationFragment on DiscountApplication {
+    __typename
     allocationMethod
     targetSelection
     targetType
     ... on DiscountCodeApplication {
+      __typename
       code
       applicable
     }
     value {
       ... on PricingPercentageValue {
+        __typename
         percentage
       }
       ... on MoneyV2 {
@@ -199,10 +222,12 @@ export const discountApplicationFragment = gql`
 
 export const lineItemFragment = gql`
   fragment LineItemFragment on CheckoutLineItem {
+    __typename
     id
     quantity
     title
     discountAllocations {
+      __typename
       allocatedAmount {
         ...MoneyV2Fragment
       }
@@ -220,6 +245,7 @@ export const lineItemFragment = gql`
 
 export const checkoutFragment = gql`
   fragment CheckoutFragment on Checkout {
+    __typename
     id
     paymentDueV2 {
       ...MoneyV2Fragment
@@ -227,17 +253,21 @@ export const checkoutFragment = gql`
     webUrl
     completedAt
     shippingLine {
+      __typename
       handle
       price
       title
     }
     email
     discountApplications(first: 100) {
+      __typename
       pageInfo {
+        __typename
         hasNextPage
         hasPreviousPage
       }
       edges {
+        __typename
         cursor
         node {
           ...DiscountApplicationFragment
@@ -245,11 +275,14 @@ export const checkoutFragment = gql`
       }
     }
     lineItems(first: 100) {
+      __typename
       pageInfo {
+        __typename
         hasNextPage
         hasPreviousPage
       }
       edges {
+        __typename
         cursor
         node {
           ...LineItemFragment

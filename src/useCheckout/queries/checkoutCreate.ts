@@ -42,6 +42,7 @@ export const CHECKOUT_CREATE = gql`
       }
     ) {
       checkoutUserErrors {
+        __typename
         code
         field
       }

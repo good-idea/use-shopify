@@ -6,6 +6,7 @@ export const CHECKOUT_ATTRIBUTES_UPDATE = gql`
   mutation AddNote($checkoutId: ID!, $input: CheckoutAttributesUdpateV2Input!) {
     checkoutAttributesUpdateV2(checkoutId: $checkoutId, input: $input) {
       checkoutUserErrors {
+        __typename
         code
         field
         message

@@ -21,6 +21,7 @@ export const CHECKOUT_DISCOUNT_CODE_APPLY = gql`
       discountCode: $discountCode
     ) {
       checkoutUserErrors {
+        __typename
         code
         field
         message

@@ -14,6 +14,7 @@ export const CHECKOUT_DISCOUNT_CODE_REMOVE = gql`
   mutation CheckoutDiscountCodeRemove($checkoutId: ID!) {
     checkoutDiscountCodeRemove(checkoutId: $checkoutId) {
       checkoutUserErrors {
+        __typename
         code
         field
         message

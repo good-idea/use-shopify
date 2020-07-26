@@ -18,6 +18,7 @@ export const CHECKOUT_LINE_ITEMS_ADD = gql`
   ) {
     checkoutLineItemsAdd(checkoutId: $checkoutId, lineItems: $lineItems) {
       checkoutUserErrors {
+        __typename
         code
         field
         message
